@@ -1,7 +1,7 @@
 public abstract class User {
-    String name;
+    String alias;
 
-    public User(String name){
-
+    public User(String alias){
+        this.alias = alias;
     }
 }

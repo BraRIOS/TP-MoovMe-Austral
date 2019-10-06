@@ -1,25 +1,25 @@
 public class Discount {
-    private Active activo;
+    private Active active;
     private int minPoints;
-    private String zone;
     private int discount;
+    private Zone zone;
 
-    public Discount(Active activo, int minPoints, String zone,int discount){
-        this.activo = activo;
-        this.minPoints = minPoints;
-        this.discount = discount;
-        this.zone = zone;
+    public Discount(Active active, int minPoints,int discount, Zone zone){
+        if(active != null) this.active = active;
+        if(minPoints >= 0) this.minPoints = minPoints;
+        if(discount > 0 && discount <=100) this.discount = discount;
+        if(zone != null) this.zone = zone;
     }
 
-    public Active getActivo() {
-        return activo;
+    public Active getActive() {
+        return active;
     }
 
     public int getMinPoints() {
         return minPoints;
     }
 
-    public String getZone() {
+    public Zone getZone() {
         return zone;
     }
 

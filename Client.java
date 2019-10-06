@@ -3,9 +3,10 @@ public class Client extends User {
     private boolean loged;
     private int phone;
     private double points;
+    private String alias;
 
-    public Client(String name) {
-        super(name);
+    public Client(String alias) {
+        super(alias);
         this.status = true;
         this.loged = false;
         this.points = 0;
@@ -25,12 +26,6 @@ public class Client extends User {
 
     public void use(Active activo){
         points += activo.getPoints();
-    }
-
-    public void applyDiscount(Active activo, Discount descuento){
-        if(points >= descuento.getMinPoints() && activo.getLocation().equals(descuento.getZone()) && activo.equals(descuento.getActivo())) {
-            activo.setTarifa(activo.getTarifa() * descuento.getDiscount() / 100);
-        }
     }
 
     void setStatus(boolean newStatus){
