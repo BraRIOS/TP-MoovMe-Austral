@@ -1,6 +1,5 @@
 public class Client extends User {
     private boolean status;
-    private boolean logged;
     private int phone;
     private int points;
     private String alias;

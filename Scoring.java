@@ -31,10 +31,12 @@ public class Scoring{
        }
    }*/
 
-    public void createRankingPerZone(Zones zones){ //Por cada zona en la base de datos creamos un ranking, cuando se agregue una zona (zones.addZones()) tambien se debe ejecutar este método
-        for(int i=0; i < zones.getZones().size(); i++){
-            rankings.add(new MonthlyLeadersPerZone(zones.getZones().get(i)));
+    public void createRankingPerZone(ABM<Zone> zones){ //Por cada zona en la base de datos creamos un ranking, cuando se agregue una zona (zones.addZones()) tambien se debe ejecutar este método
+
+        for (Zone aZone: zones.getList()) {
+            rankings.add(new MonthlyLeadersPerZone(aZone));
         }
+
     }
 
     public void updateRanking(Zone zone, String alias, int points){//Al momento de alquilar un activo, MoovMe le pasa a ranking los puntos sumados por el cliente en la zona indicada
