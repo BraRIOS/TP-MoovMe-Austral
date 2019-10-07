@@ -1,14 +1,14 @@
 public class Client extends User {
     private boolean status;
-    private boolean loged;
+    private boolean logged;
     private int phone;
-    private double points;
+    private int points;
     private String alias;
 
     public Client(String alias) {
         super(alias);
         this.status = true;
-        this.loged = false;
+        this.logged = false;
         this.points = 0;
     }
 
@@ -21,7 +21,7 @@ public class Client extends User {
 
     void login(int newPhone){
         this.phone = newPhone;
-        loged = true;
+        logged = true;
     }
 
     public void use(Active activo){
@@ -36,9 +36,17 @@ public class Client extends User {
         return phone;
     }
 
-    public boolean getLoged(){
-        return loged;
+    public boolean getLogged(){
+        return logged;
     }
 
-    public double getPoints() { return points; }
+    public String getAlias() {
+        return alias;
+    }
+
+    public int getPoints() { return points; }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
 }
