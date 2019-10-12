@@ -21,4 +21,8 @@ public class Active {
     public void setInTheZone(boolean state){
         isInTheZone=state;
     }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
 }
