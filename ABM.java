@@ -1,31 +1,32 @@
 import java.util.ArrayList;
-import java.util.List;
 
-class ABM <T> {
+public class ABM <T> {
     
-    ArrayList<T> unT;
+    ArrayList<T> unT = new ArrayList<>();
 
-    public ABM() {
-        unT = new ArrayList<>();
-    }
-    
-    public void add(T instanceOfT) throws RuntimeException{
-        for (T t: unT) {
-            if (t.equals(instanceOfT)) unT.add(instanceOfT);
-            else throw new RuntimeException("Duplicated Element");
+    public void add(T instanceOfT) throws RuntimeException {
+        for (int i = 0; i < unT.size(); i++) {
+            if (unT.get(i).equals(instanceOfT)) {
+                throw new RuntimeException("Duplicated Element");
+            }
         }
+            unT.add(instanceOfT);
+
+        if (unT.isEmpty()) unT.add(instanceOfT);
     }
 
     public void remove(T instanceOfT) throws  RuntimeException{
-        for (T t: unT) {
-            if (t.equals(instanceOfT)) unT.remove(instanceOfT);
-            else throw new RuntimeException("Object Not Exist");
+        boolean founded = false;
+        for (int i = 0; i < unT.size(); i++) {
+            if (unT.get(i).equals(instanceOfT)){
+                unT.remove(instanceOfT);
+                founded = true;
+            }
         }
+        if (founded == false) throw new RuntimeException("Object Not Exist");
+        if (unT.isEmpty()) throw new RuntimeException("The List Is Empty");
     }
-
     public void clear() {unT.clear();}
-
-    public void edit() {}
 
     public ArrayList<T> getList() {return unT;}
 }

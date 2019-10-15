@@ -1,16 +1,10 @@
-import java.util.Comparator;
 
-public class Leader {
-    private String alias;
+public class Leader extends User{
     private int points;
 
     public Leader(String alias, int points) {
-        this.alias = alias;
+        super(alias);
         this.points = points;
-    }
-
-    public String getAlias() {
-        return alias;
     }
 
     public int getPoints() {
@@ -20,11 +14,4 @@ public class Leader {
     public void setPoints(int points) {
         this.points = points;
     }
-
-    public static Comparator<Leader> LeaderPointsComparator = (l1, l2) -> {
-        int points1 = l1.getPoints();
-        int points2 = l2.getPoints();
-
-        return points2 - points1;
-    };
 }

@@ -4,7 +4,7 @@ public class Discount {
     private int discount;
     private Zone zone;
 
-    public Discount(Active active, int minPoints,int discount, Zone zone){
+    public Discount(Active active, int minPoints, int discount, Zone zone){
         if(active != null) this.active = active;
         if(minPoints >= 0) this.minPoints = minPoints;
         if(discount > 0 && discount <=100) this.discount = discount;

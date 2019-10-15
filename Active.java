@@ -1,28 +1,38 @@
 public class Active {
-    private String name;
+    private String type;
     private int points;
     private Zone zone;
-    boolean isInTheZone;
+    private int id;
 
-    public Active(String name, int points, Zone zone){
-        this.name = name;
+    public Active(String type, int points, Zone zone, int id){
+        this.type = type;
         this.points = points;
         this.zone = zone;
+        this.id = id;
     }
 
     public int getPoints() {
         return points;
     }
 
-    public String getName() {
-        return name;
+    public int getId() {
+        return id;
     }
 
-    public void setInTheZone(boolean state){
-        isInTheZone=state;
+    public String getType() {
+        return type;
+    }
+
+    public boolean isInTheZone(Zone aZone) {
+        return zone.getName().equals(aZone.getName());
     }
 
     public void setPoints(int points) {
         this.points = points;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this.getId() == ((Active) obj).getId();
     }
 }

@@ -2,13 +2,12 @@ public class Client extends User {
     private boolean status;
     private int phone;
     private int points;
-    private String alias;
 
-    public Client(String alias) {
+    public Client(String alias, int phone) {
         super(alias);
         this.status = true;
-        this.logged = false;
         this.points = 0;
+        this.phone = phone;
     }
 
     public String getStatus(){
@@ -18,13 +17,8 @@ public class Client extends User {
         return "You have been blocked";
     }
 
-    void login(int newPhone){
-        this.phone = newPhone;
-        logged = true;
-    }
-
-    public void use(Active activo){
-        points += activo.getPoints();
+    public void use(Active active){
+        points += active.getPoints();
     }
 
     void setStatus(boolean newStatus){
@@ -33,14 +27,6 @@ public class Client extends User {
 
     public int getPhone() {
         return phone;
-    }
-
-    public boolean getLogged(){
-        return logged;
-    }
-
-    public String getAlias() {
-        return alias;
     }
 
     public int getPoints() { return points; }
