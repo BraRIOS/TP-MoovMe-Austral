@@ -5,16 +5,16 @@ public class Scoring{
         discounts= new ABM<>();
         rankings = new ABM<>();
     }
-    public void addDiscount(Active active, int minPoints, int discount, Zone zone){
-        discounts.add(new Discount(active, minPoints, discount, zone));
+    public void addDiscount(Assets assets, int minPoints, int discount, Zone zone){
+        discounts.add(new Discount(assets, minPoints, discount, zone));
     }
-    public void removeDiscount(Active active, Zone zone){
+    public void removeDiscount(Assets assets, Zone zone){
         for( Discount d : discounts.getList()){
-            if (d.getActive().equals(active) && d.getZone().equals(zone))
+            if (d.getAssets().equals(assets) && d.getZone().equals(zone))
                 discounts.remove(d);
         }
     }
-    /*public Discount findDiscount(Client aClient, Active anActive, Zone aZone){ //Viaje le pasa a Scoring el cliente para ver sus puntos, el activo que pidio el cliente y la zona indicada
+    /*public Discount findDiscount(Client aClient, Assets anActive, Zone aZone){ //Viaje le pasa a Scoring el cliente para ver sus puntos, el activo que pidio el cliente y la zona indicada
        Iterator<Discount> it = discounts.iterator();
        while(it.hasNext()) {
            Discount aDiscount= it.next();

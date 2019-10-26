@@ -17,10 +17,6 @@ public class Client extends User {
         return "You have been blocked";
     }
 
-    public void use(Active active){
-        points += active.getPoints();
-    }
-
     void setStatus(boolean newStatus){
         status = newStatus;
     }
