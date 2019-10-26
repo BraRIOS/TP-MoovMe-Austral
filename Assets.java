@@ -22,7 +22,7 @@ public class Assets {
         return type;
     }
 
-    public boolean isInTheZone(Zone aZone) {
+    public boolean sameZone(Zone aZone) {
         return zone.getName().equals(aZone.getName());
     }
 
@@ -41,5 +41,9 @@ public class Assets {
     @Override
     public boolean equals(Object obj) {
         return this.getId() == ((Assets) obj).getId();
+    }
+
+    public boolean equalsByType(Assets a) {
+        return this.getType().equals(a.getType());
     }
 }

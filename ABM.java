@@ -7,7 +7,7 @@ public class ABM <T> {
     public void add(T instanceOfT) throws RuntimeException {
         for (int i = 0; i < unT.size(); i++) {
             if (unT.get(i).equals(instanceOfT)) {
-                throw new RuntimeException("Duplicated Element");
+                throw new RuntimeException("Duplicated Element at index " + i);
             }
         }
             unT.add(instanceOfT);

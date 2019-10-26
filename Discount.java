@@ -7,7 +7,7 @@ public class Discount {
     public Discount(Assets assets, int minPoints, int discount, Zone zone){
         if(assets != null) this.assets = assets;
         if(minPoints >= 0) this.minPoints = minPoints;
-        if(discount > 0 && discount <=100) this.discount = discount;
+        if(discount > 0 && discount <=100) this.discount = 1 - discount/100;
         if(zone != null) this.zone = zone;
     }
 

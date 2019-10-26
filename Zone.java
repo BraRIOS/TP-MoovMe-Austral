@@ -4,7 +4,7 @@ public class Zone {
 
     public Zone(String name, int incrementPercent){
         this.name=name;
-        if(incrementPercent>=0 && incrementPercent<=100) this.incrementPercent = 1 - incrementPercent/100;
+        if(incrementPercent>=0 && incrementPercent<=100) this.incrementPercent = 1 + incrementPercent/100;
     }
 
     public String getName() {
@@ -15,4 +15,8 @@ public class Zone {
         return incrementPercent;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return this.getName().equals(((Zone) obj).getName());
+    }
 }
