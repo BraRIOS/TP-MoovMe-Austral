@@ -29,4 +29,12 @@ public class ABM <T> {
     public void clear() {unT.clear();}
 
     public ArrayList<T> getList() {return unT;}
+
+    public int size(){
+        return unT.size();
+    }
+
+    public T get(int position) {
+        return unT.get(position);
+    }
 }
