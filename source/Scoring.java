@@ -75,6 +75,14 @@ public class Scoring{
         return activate;
     }
 
+    /*public boolean validateDiscount(Client client, Zone zone) {
+        if (!discountFinder().getZone().equals(zone))
+            throw new IllegalArgumentException("We did not found the Zone specified");
+        if (client.getPoints() >= discountFinder().getMinPoints()) return true;
+        return false;
+     }alternativa optimizada
+     */
+
 //Este metodo aplica el descuento sobre la tarifa a partir de la validacion del descuento, si el descuento no es valido la tarifa permanece igual
     public double applyDiscount(Client client, Zone zone){
         double newTariff;

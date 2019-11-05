@@ -17,6 +17,7 @@ public class Client extends User {
     public boolean getStatus(){
         return status;
     }
+
     public void addConsumption(Consumption c){
         consumptions.add(c);
     }
