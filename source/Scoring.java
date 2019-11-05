@@ -59,29 +59,16 @@ public class Scoring{
         for(int i = 0; i < discounts.size(); i++){
              position = i;
         }
-        return discounts.get(position);
-    }
-    public boolean validateDiscount(Client client, Zone zone){           //Retorna true o false si encuentra el descuento por la zona y si el cliente es apto para utilizar el descuento
-        boolean activate = false;
-        if(discountFinder().getZone().equals(zone)) {
-            if (client.getPoints() >= discountFinder().getMinPoints()) {
-                activate = true;
-            } else {
-                activate = false;
-            }
-        }else {
-            new IllegalArgumentException("We did not found the Zone specified");
-        }
-        return activate;
+        return discounts.getList().get(position);
     }
 
-    /*public boolean validateDiscount(Client client, Zone zone) {
+    public boolean validateDiscount(Client client, Zone zone) {
         if (!discountFinder().getZone().equals(zone))
             throw new IllegalArgumentException("We did not found the Zone specified");
-        if (client.getPoints() >= discountFinder().getMinPoints()) return true;
+        if (client.getPoints() >= discountFinder().getMinPoints())
+            return true;
         return false;
-     }alternativa optimizada
-     */
+     }
 
 //Este metodo aplica el descuento sobre la tarifa a partir de la validacion del descuento, si el descuento no es valido la tarifa permanece igual
     public double applyDiscount(Client client, Zone zone){
