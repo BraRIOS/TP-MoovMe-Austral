@@ -1,9 +1,12 @@
+import java.util.HashMap;
+
 public class Scoring{
     private ABM<Discount> discounts;
-    private ABM<MonthlyLeadersPerZone> rankings;
+    private HashMap<Zone,>;
+    //private ABM<MonthlyLeadersPerZone> rankings;
     public Scoring(){
         discounts= new ABM<>();
-        rankings = new ABM<>();
+        //rankings = new ABM<>();
     }
     public void addDiscount(Assets assets, int minPoints, int discount, Zone zone){
         discounts.add(new Discount(assets, minPoints, discount, zone));
@@ -24,7 +27,7 @@ public class Scoring{
        }
    }*/
 
-    public void createRankingPerZone(ABM<Zone> zones){ //Por cada zona en la lista de zonas del ABM creamos un ranking, cuando se agregue una zona (zones.addZones()) tambien se debe ejecutar este método
+   /* public void createRankingPerZone(ABM<Zone> zones){ //Por cada zona en la lista de zonas del ABM creamos un ranking, cuando se agregue una zona (zones.addZones()) tambien se debe ejecutar este método
         for (Zone aZone: zones.getList()) {
             rankings.add(new MonthlyLeadersPerZone(aZone));
         }
@@ -51,5 +54,5 @@ public class Scoring{
                 }
             }
         }
-    }
+    }*/
 }

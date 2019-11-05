@@ -1,6 +1,6 @@
 import org.joda.time.DateTime;
 
-public class Consumption{
+public class Consumption {
     private double consumptionPrice;
     private DateTime endTime;
 
