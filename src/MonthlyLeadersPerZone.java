@@ -7,9 +7,15 @@ public class MonthlyLeadersPerZone {
         leaders = new ABM<>();
     }
     public void updateLeaders(Client aClient, int points){ //TEMPORAL
+<<<<<<< Updated upstream:src/MonthlyLeadersPerZone.java
         try{
             leaders.getList().add(new Leader(aClient.getAlias(), points));
         }catch (RuntimeException r){
+=======
+        //try{
+            leaders.add(new Leader(aClient.getAlias(), "J", points));
+        /*}catch (RuntimeException r){
+>>>>>>> Stashed changes:source/LeaderBoard.java
             String msg = r.getMessage();
             String msgSub = msg.substring(28);
             int index = Integer.parseInt(msgSub);

@@ -5,7 +5,7 @@ public class Scoring{
 
     public Scoring(){
         discounts= new ABM<>();
-        rankings = new ABM<>();
+        rankings = new HashMap<>();
     }
     public void addDiscount(Assets assets, int minPoints, int discount, Zone zone){
         discounts.add(new Discount(assets, minPoints, discount, zone));
@@ -26,12 +26,16 @@ public class Scoring{
        }
    }*/
 
+<<<<<<< Updated upstream:src/Scoring.java
     public void createRankingPerZone(ABM<Zone> zones){ //Por cada zona en la lista de zonas del ABM creamos un ranking, cuando se agregue una zona (zones.addZones()) tambien se debe ejecutar este método
         for (Zone aZone: zones.getList()) {
             rankings.add(new MonthlyLeadersPerZone(aZone));
         }
 
     }
+=======
+    /*public void startRanking()
+>>>>>>> Stashed changes:source/Scoring.java
 
     public void updateRanking(Zone zone, Client aClient, int points){//Al momento de finalizar el viaje, MoovMe le pasa a Scoring los puntos sumados por el cliente (mediante el invoice) en la zona indicada
         for(int i=0; i< rankings.getList().size(); i++){
@@ -85,5 +89,5 @@ public class Scoring{
             newTariff = tariff.pricePerMinute;
         }
         return newTariff;
-    }
+    }*/
 }
