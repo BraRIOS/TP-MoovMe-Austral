@@ -1,8 +1,6 @@
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
-import java.util.Dictionary;
-
 public class Trip {
     private DateTime startTime;//tiempo en que alquila el activo
     private DateTime endTime;//tiempo en que devuelve el activo
