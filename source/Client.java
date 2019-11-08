@@ -1,48 +1,43 @@
+import java.util.HashMap;
+
 public class Client extends User {
-    private boolean status;
+    private boolean blocked;
     private int phone;
-    private int points;
-    private ABM<Consumption> consumptions;
+    private HashMap<Zone,Score> points;
+    private ABM<Consumption> travelHistory;
     private boolean winnerOfTheMonth;
 
     public Client(String alias, int phone) {
         super(alias);
-        this.status = true;
-        this.points = 0;
+        this.blocked = false;
+        this.points = new HashMap<>();
         this.phone = phone;
-        consumptions = new ABM<>();
+        travelHistory= new ABM<>();
         winnerOfTheMonth = false;
     }
 
     public boolean getStatus(){
-        return status;
-    }
-
-    public void addConsumption(Consumption c){
-        consumptions.add(c);
+        return blocked;
     }
 
     public void setStatus(boolean newStatus){
-        status = newStatus;
+        blocked = newStatus;
     }
 
-    public int getPhone() {
-        return phone;
-    }
 
-    public int getPoints() { return points; }
+    public boolean isBlocked(){return blocked;}
 
-    public void setPoints(int points) {
-        this.points = points;
-    }
+    public int getPhone() {return phone;}
 
-    public ABM<Consumption> getConsumptions() {
-        return consumptions;
-    }
+    public HashMap<Zone,Score> getPoints() { return points; }
 
-    public boolean isWinnerOfTheMonth() {
-        return winnerOfTheMonth;
-    }
+    public ABM<Consumption> getTravelHistory() {return travelHistory;}
+
+    public void block(){blocked = true; }
+
+    public void unBlock(){blocked = false;}
+
+    public void addConsumption(Consumption c){travelHistory.add(c);}
 
     public void setWinnerOfTheMonth(boolean winnerOfTheMonth) {
         this.winnerOfTheMonth = winnerOfTheMonth;
