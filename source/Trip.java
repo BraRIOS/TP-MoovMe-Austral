@@ -48,10 +48,10 @@ public class Trip {
                     finalPrice = t.getPricePerMinute()*getDurationOfTrip();
                     aClient.addConsumption(new Consumption( finalPrice, endTime));
                 }
-                //PUNTOS
+                /*//PUNTOS
                 pointsAcquired = Math.round(pointsSummary(aClient,anAssets)*(1+ (isAtTime()? bonus : 0)));
                 aClient.getPoints().get(anAssets.getZone()).addPoints(pointsAcquired);
-               /* if (getDeliveryTime()!=null && (getDeliveryTime().isBefore(endTime) | getDeliveryTime().isEqual(endTime))){
+               /*if (getDeliveryTime()!=null && (getDeliveryTime().isBefore(endTime) | getDeliveryTime().isEqual(endTime))){
                     pointsAcquired = Math.round(pointsSummary(aClient,anAssets)*1.2f);
                     aClient.setTotalPoints(aClient.getTotalPoints() + pointsAcquired);
                 }

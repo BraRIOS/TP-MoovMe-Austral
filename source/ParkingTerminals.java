@@ -7,7 +7,7 @@ public class ParkingTerminals {
         this.zone = zone;
         actives = new ABM<>();
     }
-    public void addActive(Assets assets){
+    public void deliveryActive(Assets assets){
         actives.add(assets);
     }
     public void pickUp(Assets assets){
