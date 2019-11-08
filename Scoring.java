@@ -1,11 +1,12 @@
+import java.util.HashMap;
+
 public class Scoring{
     private ABM<Discount> discounts;
-    private ABM<MonthlyLeadersPerZone> rankings;
-    private Tariff tariff;
-
+    private HashMap<Zone,>;
+    //private ABM<MonthlyLeadersPerZone> rankings;
     public Scoring(){
         discounts= new ABM<>();
-        rankings = new ABM<>();
+        //rankings = new ABM<>();
     }
     public void addDiscount(Assets assets, int minPoints, int discount, Zone zone){
         discounts.add(new Discount(assets, minPoints, discount, zone));
@@ -26,7 +27,7 @@ public class Scoring{
        }
    }*/
 
-    public void createRankingPerZone(ABM<Zone> zones){ //Por cada zona en la lista de zonas del ABM creamos un ranking, cuando se agregue una zona (zones.addZones()) tambien se debe ejecutar este método
+   /* public void createRankingPerZone(ABM<Zone> zones){ //Por cada zona en la lista de zonas del ABM creamos un ranking, cuando se agregue una zona (zones.addZones()) tambien se debe ejecutar este método
         for (Zone aZone: zones.getList()) {
             rankings.add(new MonthlyLeadersPerZone(aZone));
         }
@@ -53,37 +54,5 @@ public class Scoring{
                 }
             }
         }
-    }
-    public Discount discountFinder(){              //Es un metodo en general para encontrar los descuentos de la lista
-        int position = 0;
-        for(int i = 0; i < discounts.size(); i++){
-             position = i;
-        }
-        return discounts.get(position);
-    }
-    public boolean validateDiscount(Client client, Zone zone){           //Retorna true o false si encuentra el descuento por la zona y si el cliente es apto para utilizar el descuento
-        boolean activate = false;
-        if(discountFinder().getZone().equals(zone)) {
-            if (client.getPoints() >= discountFinder().getMinPoints()) {
-                activate = true;
-            } else {
-                activate = false;
-            }
-        }else {
-            new IllegalArgumentException("We did not found the Zone specified");
-        }
-        return activate;
-    }
-
-//Este metodo aplica el descuento sobre la tarifa a partir de la validacion del descuento, si el descuento no es valido la tarifa permanece igual
-    public double applyDiscount(Client client, Zone zone){
-        double newTariff;
-        if(validateDiscount(client, zone) == true) {
-            newTariff = tariff.pricePerMinute * discountFinder().getDiscount();
-        }
-        else{
-            newTariff = tariff.pricePerMinute;
-        }
-        return newTariff;
-    }
+    }*/
 }

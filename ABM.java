@@ -7,7 +7,7 @@ public class ABM <T> {
     public void add(T instanceOfT) throws RuntimeException {
         for (int i = 0; i < unT.size(); i++) {
             if (unT.get(i).equals(instanceOfT)) {
-                throw new RuntimeException("Duplicated Element at index " + i);
+                throw new RuntimeException("Duplicated Element at index ");
             }
         }
             unT.add(instanceOfT);
@@ -23,7 +23,7 @@ public class ABM <T> {
                 founded = true;
             }
         }
-        if (founded == false) throw new RuntimeException("Object Not Exist");
+        if (!founded) throw new RuntimeException("Object Not Exist");
         if (unT.isEmpty()) throw new RuntimeException("The List Is Empty");
     }
     public void clear() {unT.clear();}

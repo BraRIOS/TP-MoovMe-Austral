@@ -10,4 +10,15 @@ public class Invoice {
         this.finalPrice = finalPrice;
         this.endTime = endTime;
     }
+    public int getPointsAcquired() {
+        return pointsAcquired;
+    }
+
+    public double getFinalPrice() {
+        return finalPrice;
+    }
+
+    public DateTime getEndTime() {
+        return endTime;
+    }
 }

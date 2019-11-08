@@ -1,4 +1,3 @@
-
 public class MonthlyLeadersPerZone {
     private ABM<Leader> leaders;
     private Zone zone;

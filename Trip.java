@@ -1,21 +1,23 @@
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
-import java.util.Dictionary;
-
 public class Trip {
     private DateTime startTime;//tiempo en que alquila el activo
     private DateTime endTime;//tiempo en que devuelve el activo
     private DateTime deliveryTime;//hora opcional para devolver el activo y obtener mas puntos
     private Interval durationOfTrip;//tramo recorrido en minutos
+    private float bonus;
 
     public Trip() {//Se crea una instancia de viaje cada vez que un cliente inicie un viaje por pantalla (MoovMe)
         startTime = DateTime.now();
+        deliveryTime = null;
+        bonus=0;
     }
 
     //setear hora de entrega opcional
     public void setDeliveryTime(int hour,int minute) {
         this.deliveryTime = new DateTime(DateTime.now().getYear(),DateTime.now().getMonthOfYear(),DateTime.now().getDayOfMonth(),hour,minute);
+        bonus=0.2f;
     }
 
     public DateTime getDeliveryTime() {
@@ -28,6 +30,7 @@ public class Trip {
     - se suman los puntos correspondientes al tipo de activo, zona y tiempo de duración a los puntos del cliente.
     - En caso de cumplir con la hora de entrega indicada anteriormente, se le agrega un 20% adicional a la suma de puntajes anterior.
     - En caso de DENUNCIA verificar si el cliente fue bloqueado y aplicarle una multa
+    - El método retornara una factura que indica el precio a pagar, los puntos ganados y la hora en que finalizó el viaje
     */
     public Invoice FinishTrip(Client aClient, Assets anAssets, ABM<Tariff> tariffs, Discount aDiscount){
         endTime=DateTime.now();
@@ -46,14 +49,16 @@ public class Trip {
                     aClient.addConsumption(new Consumption( finalPrice, endTime));
                 }
                 //PUNTOS
-                if (getDeliveryTime().isBefore(endTime) || getDeliveryTime().isEqual(endTime)){
+                pointsAcquired = Math.round(pointsSummary(aClient,anAssets)*(1+ (isAtTime()? bonus : 0)));
+                aClient.getPoints().get(anAssets.getZone()).addPoints(pointsAcquired);
+               /* if (getDeliveryTime()!=null && (getDeliveryTime().isBefore(endTime) | getDeliveryTime().isEqual(endTime))){
                     pointsAcquired = Math.round(pointsSummary(aClient,anAssets)*1.2f);
-                    aClient.setPoints(aClient.getPoints() + pointsAcquired);
+                    aClient.setTotalPoints(aClient.getTotalPoints() + pointsAcquired);
                 }
                 else {
                     pointsAcquired = pointsSummary(aClient,anAssets);
-                    aClient.setPoints(aClient.getPoints() + pointsAcquired);
-                }
+                    aClient.setTotalPoints(aClient.getTotalPoints() + pointsAcquired);
+                }*/
             }
             //MULTA
             if (anAssets.sameZone(t.getZone()) && !aClient.getStatus()){
@@ -71,6 +76,10 @@ public class Trip {
 
     public int pointsSummary(Client aClient, Assets anAssets){
         return Math.toIntExact(Math.round(anAssets.getPoints()*anAssets.getZone().getIncrementPercent()*getDurationOfTrip()));
+    }
+
+    public boolean isAtTime(){
+        return getDeliveryTime()!=null && (getDeliveryTime().isBefore(endTime) || getDeliveryTime().isEqual(endTime));
     }
 }
 
