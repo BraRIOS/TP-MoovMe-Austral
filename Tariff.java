@@ -1,6 +1,6 @@
 public class Tariff {
-    double pricePerMinute;
-    Zone zone;
+    private double pricePerMinute;
+    private Zone zone;
 
     public Tariff(double price, Zone zone) {
         pricePerMinute = price;

@@ -1,33 +1,23 @@
-public class Assets {
-    private String type;
-    private int points;
+public class Asset {
+    private TypeOfAsset type;
     private Zone zone;
     private int id;
 
-    public Assets(String type, int points,int id){
+    public Asset(TypeOfAsset type,int id){
         this.type = type;
-        this.points = points;
         this.id = id;
-    }
-
-    public int getPoints() {
-        return points;
     }
 
     public int getId() {
         return id;
     }
 
-    public String getType() {
+    public TypeOfAsset getType() {
         return type;
     }
 
     public boolean sameZone(Zone aZone) {
         return zone.getName().equals(aZone.getName());
-    }
-
-    public void setPoints(int points) {
-        this.points = points;
     }
 
     public Zone getZone() {
@@ -40,10 +30,10 @@ public class Assets {
 
     @Override
     public boolean equals(Object obj) {
-        return this.getId() == ((Assets) obj).getId();
+        return this.getId() == ((Asset) obj).getId();
     }
 
-    public boolean equalsByType(Assets a) {
+    public boolean equalsByType(Asset a) {
         return this.getType().equals(a.getType());
     }
 }

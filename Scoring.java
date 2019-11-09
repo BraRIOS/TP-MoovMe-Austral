@@ -8,41 +8,41 @@ public class Scoring{
     private HashMap<Zone, ArrayList<Client>> rankings;
     public Scoring(){
         discounts= new ABM<>();
-        rankings = new ABM<>();
+       // rankings = new ABM<>();
     }
-    public void addDiscount(Assets assets, int minPoints, int discount, Zone zone){
-        discounts.add(new Discount(assets, minPoints, discount, zone));
+    public void addDiscount(Asset asset, int minPoints, int discount, Zone zone){
+        discounts.add(new Discount(asset, minPoints, discount, zone));
     }
-    public void removeDiscount(Assets assets, Zone zone){
+    public void removeDiscount(Asset asset, Zone zone){
         for( Discount d : discounts.getList()){
-            if (d.getAssets().equalsByType(assets) && d.getZone().equals(zone))
+            if (d.getType().equalsByType(asset) && d.getZone().equals(zone))
                 discounts.remove(d);
         }
     }
 
-    public void startRanking()
+   // public void startRanking()
 
-    public void updateRanking(Zone zone, Client aClient, int points){//Al momento de finalizar el viaje, MoovMe le pasa a Scoring los puntos sumados por el cliente (mediante el invoice) en la zona indicada
-        for(int i=0; i< rankings.getList().size(); i++){
-            if(rankings.getList().get(i).getZone().equals(zone))
-                rankings.getList().get(i).updateLeaders(aClient, points);
-        }
-    }
+    //public void updateRanking(Zone zone, Client aClient, int points){//Al momento de finalizar el viaje, MoovMe le pasa a Scoring los puntos sumados por el cliente (mediante el invoice) en la zona indicada
+       // for(int i=0; i< rankings.getList().size(); i++){
+          //  if(rankings.getList().get(i).getZone().equals(zone))
+              //  rankings.getList().get(i).updateLeaders(aClient, points);
+    //    }
+   // }
 
     public void monthlyAwards(ABM<Zone> zones, ABM<Client> clients) {
         for (Zone z: zones.getList()) {
             for(Client c: clients.getList()){
-                for(LeaderBoard m : rankings.getList()){
-                    if(m.getZone().equals(z)) {
-                        for (int i = 0; i < 3; i++) {
-                            if (m.getLeaders().getList().get(i).equalsByName(c))
-                                c.setWinnerOfTheMonth(true);
+               // for(LeaderBoard m : rankings.getList()){
+                    //if(m.getZone().equals(z)) {
+                      //  for (int i = 0; i < 3; i++) {
+                          //  if (m.getLeaders().getList().get(i).equalsByName(c))
+                             //   c.setWinnerOfTheMonth(true);
                         }
                     }
                 }
-            }
-        }
-    }
+           // }
+     //   }
+  //  }
     public Discount discountFinder(){              //Es un metodo en general para encontrar los descuentos de la lista
         int position = 0;
         for(int i = 0; i < discounts.size(); i++){
