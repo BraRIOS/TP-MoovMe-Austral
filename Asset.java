@@ -1,33 +1,23 @@
 public class Asset {
-    private String type;
-    private int points;
+    private TypeOfAsset type;
     private Zone zone;
     private int id;
 
-    public Asset(String type, int points, int id){
+    public Asset(TypeOfAsset type,int id){
         this.type = type;
-        this.points = points;
         this.id = id;
-    }
-
-    public int getPoints() {
-        return points;
     }
 
     public int getId() {
         return id;
     }
 
-    public String getType() {
+    public TypeOfAsset getType() {
         return type;
     }
 
     public boolean sameZone(Zone aZone) {
         return zone.getName().equals(aZone.getName());
-    }
-
-    public void setPoints(int points) {
-        this.points = points;
     }
 
     public Zone getZone() {

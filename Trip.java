@@ -7,11 +7,14 @@ public class Trip {
     private DateTime deliveryTime;//hora opcional para devolver el activo y obtener mas puntos
     private Interval durationOfTrip;//tramo recorrido en minutos
     private float bonus;
+    private Zone zone;
 
-    public Trip() {//Se crea una instancia de viaje cada vez que un cliente inicie un viaje por pantalla (MoovMe)
+    public Trip(Zone aZone) {//Se crea una instancia de viaje cada vez que un cliente inicie un viaje por pantalla (MoovMe)
         startTime = DateTime.now();
         deliveryTime = null;
         bonus=0;
+        zone=aZone;
+
     }
 
     //setear hora de entrega opcional
@@ -38,7 +41,7 @@ public class Trip {
         double finalPrice = 0;
         int pointsAcquired = 0;
         for (Tariff t: tariffs.getList()) {
-            if (anAsset.sameZone(t.getZone()) && aClient.isBlocked()) { //Verifica si el cliente no está bloqueado y busca la tarifa correspondiente
+            if (zone.equals(t.getZone()) && aClient.isBlocked()) { //Verifica si el cliente no está bloqueado y busca la tarifa correspondiente
                 //CONSUMOS
                 if (aDiscount!=null){
                 finalPrice = t.getPricePerMinute()*getDurationOfTrip()*aDiscount.getDiscount();
@@ -49,14 +52,14 @@ public class Trip {
                     aClient.addConsumption(new Consumption( finalPrice, endTime));
                 }
                 /*//PUNTOS
-                pointsAcquired = Math.round(pointsSummary(aClient,anAssets)*(1+ (isAtTime()? bonus : 0)));
-                aClient.getPoints().get(anAssets.getZone()).addPoints(pointsAcquired);
+                pointsAcquired = Math.round(pointsSummary(aClient,anAsset)*(1+ (isAtTime()? bonus : 0)));
+                aClient.getPoints().get(anAsset.getZone()).addPoints(pointsAcquired);
                /*if (getDeliveryTime()!=null && (getDeliveryTime().isBefore(endTime) | getDeliveryTime().isEqual(endTime))){
-                    pointsAcquired = Math.round(pointsSummary(aClient,anAssets)*1.2f);
+                    pointsAcquired = Math.round(pointsSummary(aClient,anAsset)*1.2f);
                     aClient.setTotalPoints(aClient.getTotalPoints() + pointsAcquired);
                 }
                 else {
-                    pointsAcquired = pointsSummary(aClient,anAssets);
+                    pointsAcquired = pointsSummary(aClient,anAsset);
                     aClient.setTotalPoints(aClient.getTotalPoints() + pointsAcquired);
                 }*/
             }
@@ -75,7 +78,7 @@ public class Trip {
     }
 
     public int pointsSummary(Client aClient, Asset anAsset){
-        return Math.toIntExact(Math.round(anAsset.getPoints()* anAsset.getZone().getIncrementPercent()*getDurationOfTrip()));
+        return Math.toIntExact(Math.round(anAsset.getType().getPoints()* anAsset.getZone().getIncrementPercent()*getDurationOfTrip()));
     }
 
     public boolean isAtTime(){
