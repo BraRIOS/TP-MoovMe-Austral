@@ -8,7 +8,7 @@ public class Batch {
         code=Code.getCode();
         listOfAssets=new ArrayList<>();
         for (int i=0;i<quantity;i++){
-            listOfAssets.add(new Asset(type,(int)(Math.random()*100000)));}
+            listOfAssets.add(new Asset(type,(int)(Math.random()*100000),code));}
     }
 
     public ArrayList<Asset> getListOfAssets(){

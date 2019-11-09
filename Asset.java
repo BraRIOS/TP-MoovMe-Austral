@@ -1,10 +1,12 @@
 public class Asset {
     private TypeOfAsset type;
     private int id;
+    private String batchCode;
 
-    public Asset(TypeOfAsset type,int id){
+    public Asset(TypeOfAsset type,int id,String batchCode){
         this.type = type;
         this.id = id;
+        this.batchCode=batchCode;
     }
 
     public int getId() {
@@ -13,6 +15,10 @@ public class Asset {
 
     public TypeOfAsset getType() {
         return type;
+    }
+
+    public String getBatchCode() {
+        return batchCode;
     }
 
     @Override
