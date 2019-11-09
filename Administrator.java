@@ -5,10 +5,10 @@ public class Administrator extends User {
     }
 
     public void block(Client cliente){
-        cliente.setStatus(false);
+        cliente.block();
     }
 
     public void unblock(Client cliente){
-        cliente.setStatus(true);
+        cliente.unBlock();
     }
 }

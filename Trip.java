@@ -32,13 +32,13 @@ public class Trip {
     - En caso de DENUNCIA verificar si el cliente fue bloqueado y aplicarle una multa
     - El método retornara una factura que indica el precio a pagar, los puntos ganados y la hora en que finalizó el viaje
     */
-    public Invoice FinishTrip(Client aClient, Assets anAssets, ABM<Tariff> tariffs, Discount aDiscount){
+    public Invoice FinishTrip(Client aClient, Asset anAsset, ABM<Tariff> tariffs, Discount aDiscount){
         endTime=DateTime.now();
         durationOfTrip=new Interval(startTime,endTime);
         double finalPrice = 0;
         int pointsAcquired = 0;
         for (Tariff t: tariffs.getList()) {
-            if (anAssets.sameZone(t.getZone()) && aClient.getStatus()) { //Verifica si el cliente no está bloqueado y busca la tarifa correspondiente
+            if (anAsset.sameZone(t.getZone()) && aClient.isBlocked()) { //Verifica si el cliente no está bloqueado y busca la tarifa correspondiente
                 //CONSUMOS
                 if (aDiscount!=null){
                 finalPrice = t.getPricePerMinute()*getDurationOfTrip()*aDiscount.getDiscount();
@@ -61,7 +61,7 @@ public class Trip {
                 }*/
             }
             //MULTA
-            if (anAssets.sameZone(t.getZone()) && !aClient.getStatus()){
+            if (anAsset.sameZone(t.getZone()) && !aClient.isBlocked()){
                 finalPrice = t.getPricePerMinute()*getDurationOfTrip()*2;
                 aClient.addConsumption(new Consumption( finalPrice, endTime));
             }
@@ -74,8 +74,8 @@ public class Trip {
         return durationOfTrip.toDuration().toStandardMinutes().getMinutes();
     }
 
-    public int pointsSummary(Client aClient, Assets anAssets){
-        return Math.toIntExact(Math.round(anAssets.getPoints()*anAssets.getZone().getIncrementPercent()*getDurationOfTrip()));
+    public int pointsSummary(Client aClient, Asset anAsset){
+        return Math.toIntExact(Math.round(anAsset.getPoints()* anAsset.getZone().getIncrementPercent()*getDurationOfTrip()));
     }
 
     public boolean isAtTime(){

@@ -1,18 +1,18 @@
 public class Discount {
-    private Assets assets;
+    private Asset asset;
     private int minPoints;
     private int discount;
     private Zone zone;
 
-    public Discount(Assets assets, int minPoints, int discount, Zone zone){
-        if(assets != null) this.assets = assets;
+    public Discount(Asset asset, int minPoints, int discount, Zone zone){
+        if(asset != null) this.asset = asset;
         if(minPoints >= 0) this.minPoints = minPoints;
         if(discount > 0 && discount <=100) this.discount = 1 - discount/100;
         if(zone != null) this.zone = zone;
     }
 
-    public Assets getAssets() {
-        return assets;
+    public Asset getAsset() {
+        return asset;
     }
 
     public int getMinPoints() {

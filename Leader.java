@@ -14,8 +14,4 @@ public class Leader extends User{
     public void setPoints(int points) {
         this.points = points;
     }
-
-    public boolean equalsByName(Client c){
-        return this.getAlias().equals(c.getAlias());
-    }
 }
