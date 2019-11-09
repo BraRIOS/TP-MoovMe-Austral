@@ -50,7 +50,7 @@ public class Main {
        // }
 
        // bruno.addPointsToZone(tuquito,1000);
-        //juan.addPointsToZone(tuquito,12000);
+        juan.addPointsToZone(tuquito,12000);
 
         System.out.println("\n" + bruno.getAlias() + "\t" + bruno.getPointsPerZone().get(tuquito));
         System.out.println(juan.getAlias() + "\t" + juan.getPointsPerZone().get(tuquito) + "\n");
@@ -67,17 +67,14 @@ public class Main {
         ABM<Tariff> tariffABM=new ABM<>();
         tariffABM.add(new Tariff(777,tuquito));
         Trip narnia=new Trip(tuquito);
-       // narnia.setEndTime(new DateTime(2019,11,10,1,1));
-        narnia.FinishTrip(juan,asset,tariffABM,null);
+        narnia.setEndTime(new DateTime(2019,11,10,23,00));
+        narnia.FinishTrip(juan,asset,tariffABM,scoring.findDiscount(juan,asset,tuquito));
         System.out.println(juan.getPoints().getCurrentPoints());
         for (Discount discount : scoring.getDiscounts().getList()) {
             System.out.println(discount.getDiscount()+" "+discount.getMinPoints()+discount.getZone().getName()+discount.getType().getName());
         }
 
         System.out.println(asset.getType().getName()+" "+tuquito.getName()+" "+juan.getPoints().getCurrentPoints());
-
-
-
 
         System.out.println(scoring.findDiscount(juan,asset,tuquito).getDiscount());
 

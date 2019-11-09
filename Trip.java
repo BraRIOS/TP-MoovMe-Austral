@@ -42,13 +42,13 @@ public class Trip {
         int pointsAcquired = 0;
         for (Tariff t: tariffs.getList()) {
             if (zone.equals(t.getZone()) && !aClient.isBlocked()) { //Verifica si el cliente no está bloqueado y busca la tarifa correspondiente
-                //CONSUMOS
-                if (aDiscount!=null)aClient.getPoints().spendPoints(aDiscount.getMinPoints());
-                finalPrice = t.getPricePerMinute()*getDurationOfTrip()*(aDiscount!=null?aDiscount.getDiscount():1);
-                aClient.addConsumption(new Consumption( finalPrice, endTime));
                 //PUNTOS
-                pointsAcquired = Math.round(pointsSummary(aClient,anAsset)*(1+ (isAtTime()? bonus : 0)));
-                aClient.addPointsToZone(zone,pointsAcquired);
+                pointsAcquired = Math.round(pointsSummary(aClient, anAsset) * (1 + (isAtTime() ? bonus : 0)));
+                aClient.addPointsToZone(zone, pointsAcquired);
+                //CONSUMOS
+                if (aDiscount != null) aClient.getPoints().spendPoints(aDiscount.getMinPoints());
+                finalPrice = t.getPricePerMinute() * getDurationOfTrip() * (aDiscount != null ? aDiscount.getDiscount() : 1);
+                aClient.addConsumption(new Consumption(finalPrice, endTime));
             }
             //MULTA
             if (zone.equals(t.getZone()) && aClient.isBlocked()){
