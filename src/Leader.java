@@ -2,8 +2,8 @@
 public class Leader extends User{
     private int points;
 
-    public Leader(String alias, int points) {
-        super(alias);
+    public Leader(String alias, String password, int points) {
+        super(alias, password);
         this.points = points;
     }
 

@@ -1,7 +1,7 @@
 public class Administrator extends User {
 
-    public Administrator(String name) {
-        super(name);
+    public Administrator(String name, String password) {
+        super(name, password);
     }
 
     public void block(Client cliente){
