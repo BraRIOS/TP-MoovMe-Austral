@@ -17,6 +17,6 @@ public class Zone {
 
     @Override
     public boolean equals(Object obj) {
-        return this.getName().equals(((Zone) obj).getName());
+        return name.equals(((Zone) obj).getName());
     }
 }

@@ -27,7 +27,7 @@ public class Trip {
         return deliveryTime;
     }
 
-    /*Cuando el cliente termine el viaje por pantalla(MoovMe) ejecutamos el metodo FinishTrip, pasándole un descuento si corresponde, si no encuentra será null.
+    /*Cuando el cliente termine el viaje por pantalla(MoovMe?) ejecutamos el metodo FinishTrip, pasándole un descuento si corresponde, si no encuentra será null.
     Al terminar el viaje,
     - obtenemos el tiempo actual y calculamos la duración del viaje, buscamos la tarifa correspondiente y creamos el nuevo consumo(con el costo del viaje)
     - se suman los puntos correspondientes al tipo de activo, zona y tiempo de duración a los puntos del cliente.
@@ -36,35 +36,22 @@ public class Trip {
     - El método retornara una factura que indica el precio a pagar, los puntos ganados y la hora en que finalizó el viaje
     */
     public Invoice FinishTrip(Client aClient, Asset anAsset, ABM<Tariff> tariffs, Discount aDiscount){
-        endTime=DateTime.now();
+        //endTime=DateTime.now(); //para funcionamiento en tiempo real!!!!
         durationOfTrip=new Interval(startTime,endTime);
         double finalPrice = 0;
         int pointsAcquired = 0;
         for (Tariff t: tariffs.getList()) {
-            if (zone.equals(t.getZone()) && aClient.isBlocked()) { //Verifica si el cliente no está bloqueado y busca la tarifa correspondiente
+            if (zone.equals(t.getZone()) && !aClient.isBlocked()) { //Verifica si el cliente no está bloqueado y busca la tarifa correspondiente
                 //CONSUMOS
-                if (aDiscount!=null){
-                finalPrice = t.getPricePerMinute()*getDurationOfTrip()*aDiscount.getDiscount();
+                if (aDiscount!=null)aClient.getPoints().spendPoints(aDiscount.getMinPoints());
+                finalPrice = t.getPricePerMinute()*getDurationOfTrip()*(aDiscount!=null?aDiscount.getDiscount():1);
                 aClient.addConsumption(new Consumption( finalPrice, endTime));
-                }
-                else {
-                    finalPrice = t.getPricePerMinute()*getDurationOfTrip();
-                    aClient.addConsumption(new Consumption( finalPrice, endTime));
-                }
-                /*//PUNTOS
+                //PUNTOS
                 pointsAcquired = Math.round(pointsSummary(aClient,anAsset)*(1+ (isAtTime()? bonus : 0)));
-                aClient.getPoints().get(anAsset.getZone()).addPoints(pointsAcquired);
-               /*if (getDeliveryTime()!=null && (getDeliveryTime().isBefore(endTime) | getDeliveryTime().isEqual(endTime))){
-                    pointsAcquired = Math.round(pointsSummary(aClient,anAsset)*1.2f);
-                    aClient.setTotalPoints(aClient.getTotalPoints() + pointsAcquired);
-                }
-                else {
-                    pointsAcquired = pointsSummary(aClient,anAsset);
-                    aClient.setTotalPoints(aClient.getTotalPoints() + pointsAcquired);
-                }*/
+                aClient.addPointsToZone(zone,pointsAcquired);
             }
             //MULTA
-            if (zone.equals(t.getZone()) && !aClient.isBlocked()){
+            if (zone.equals(t.getZone()) && aClient.isBlocked()){
                 finalPrice = t.getPricePerMinute()*getDurationOfTrip()*2;
                 aClient.addConsumption(new Consumption( finalPrice, endTime));
             }
@@ -73,16 +60,20 @@ public class Trip {
     }
 
     //devolvemos el tiempo que se utilizo el activo en minutos
-    public int getDurationOfTrip() {
+    private int getDurationOfTrip() {
         return durationOfTrip.toDuration().toStandardMinutes().getMinutes();
     }
 
-    public int pointsSummary(Client aClient, Asset anAsset){
+    private int pointsSummary(Client aClient, Asset anAsset){
         return Math.toIntExact(Math.round(anAsset.getType().getPoints()* zone.getIncrementPercent()*getDurationOfTrip()));
     }
 
-    public boolean isAtTime(){
-        return getDeliveryTime()!=null && (getDeliveryTime().isBefore(endTime) || getDeliveryTime().isEqual(endTime));
+    private boolean isAtTime(){
+        return deliveryTime!=null && (deliveryTime.isBefore(endTime) || deliveryTime.isEqual(endTime));
+    }
+
+    public void setEndTime(DateTime endTime) {//para demostracion de funcionamiento correcto
+        this.endTime = endTime;
     }
 }
 

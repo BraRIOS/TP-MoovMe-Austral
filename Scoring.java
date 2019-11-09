@@ -60,7 +60,7 @@ public class Scoring{
                 i = j;
                 break;
             }
-            else throw new InstanceNotFoundException("No hay descuento para esta zona y/o activo");
+            if (j==discounts.getList().size()-1) throw new InstanceNotFoundException("No hay descuento para esta zona y/o activo");
         }
         return discounts.getList().get(i);
     }
