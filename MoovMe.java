@@ -1,37 +1,30 @@
+import java.io.*;
 
 public class MoovMe {
-    public static void main(String[] args) throws Exception {
-        Zone tuquito=new Zone("Holi",20);
 
-        Client bruno=new Client("Bruno",777);
-        Client juan = new Client("juan",888);
+    private ABM<Client> clients;
+    private ABM<Administrator> admins;
 
-        Asset asset = new Asset(new TypeOfAsset("Bicicleta",1000),1250);
-        bruno.addPointsToZone(tuquito,1000);
-        juan.addPointsToZone(tuquito,1200);
+    public ABM<Client> getClients() {
+        return clients;
+    }
 
-        System.out.println(bruno.getAlias() + "\t" + bruno.getPointsPerZone().get(tuquito));
-        System.out.println(juan.getAlias() + "\t" + juan.getPointsPerZone().get(tuquito) + "\n");
+    public ABM<Administrator> getAdmins() {
+        return admins;
+    }
 
-        Scoring scoring = new Scoring();
-        ABM<Client> clientABM = new ABM<>();
-        clientABM.add(bruno);
-        clientABM.add(juan);
-        for (Leader leader : scoring.getRankings(clientABM).get(tuquito)) {
-            System.out.println(leader.getAlias() + "\t" + leader.getPoints());
-        }
+    public ABM<User> getUsers() {
+        return users;
+    }
 
-        bruno.addPointsToZone(tuquito,1000);
-        juan.addPointsToZone(tuquito,1200);
+    private ABM<User> users;
 
-        System.out.println("\n" + bruno.getAlias() + "\t" + bruno.getPointsPerZone().get(tuquito));
-        System.out.println(juan.getAlias() + "\t" + juan.getPointsPerZone().get(tuquito) + "\n");
+    public MoovMe(ABM<User> users) {
+        this.users = users;
+    }
 
-        for (Leader leader : scoring.getRankings(clientABM).get(tuquito)) {
-            System.out.println(leader.getAlias() + "\t" + leader.getPoints());
-        }
-        scoring.getDiscounts().add(new Discount(new TypeOfAsset("Carreta",1000),100,20,tuquito));
-        scoring.getDiscounts().add(new Discount(new TypeOfAsset("Bicicleta",1000),100,10,tuquito));
-        System.out.println(scoring.findDiscount(juan,asset,tuquito).getDiscount());
+    public void addUser(User u) throws IOException {
+        users.add(u);
+        Repositories.users.writeObject(users);
     }
 }

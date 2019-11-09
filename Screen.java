@@ -19,7 +19,7 @@ public class Screen {
     }
 
     public static void printUser(User u) {
-        print("Alias: " + u.getAlias() + "\t| Password: " + u.getPassword());
+        print("Alias: " + u.getAlias());
     }
 
     public static void print(Object o) { System.out.println(o); }
