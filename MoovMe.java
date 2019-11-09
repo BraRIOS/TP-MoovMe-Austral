@@ -1,11 +1,12 @@
 
 public class MoovMe {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Zone tuquito=new Zone("Holi",20);
 
         Client bruno=new Client("Bruno",777);
         Client juan = new Client("juan",888);
 
+        Asset asset = new Asset(new TypeOfAsset("Bicicleta",1000),1250);
         bruno.addPointsToZone(tuquito,1000);
         juan.addPointsToZone(tuquito,1200);
 
@@ -29,5 +30,8 @@ public class MoovMe {
         for (Leader leader : scoring.getRankings(clientABM).get(tuquito)) {
             System.out.println(leader.getAlias() + "\t" + leader.getPoints());
         }
+        scoring.getDiscounts().add(new Discount(new TypeOfAsset("Carreta",1000),100,20,tuquito));
+        scoring.getDiscounts().add(new Discount(new TypeOfAsset("Bicicleta",1000),100,10,tuquito));
+        System.out.println(scoring.findDiscount(juan,asset,tuquito).getDiscount());
     }
 }

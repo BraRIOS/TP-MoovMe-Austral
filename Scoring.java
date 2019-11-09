@@ -1,73 +1,71 @@
+import javax.management.InstanceNotFoundException;
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.HashMap;
 
 public class Scoring{
     private ABM<Discount> discounts;
-    private Tariff tariff;
-   // private HashMap<Zone,>;
-    private HashMap<Zone, ArrayList<Client>> rankings;
+    private HashMap<Zone, ArrayList<Leader>> rankings;
     public Scoring(){
         discounts= new ABM<>();
-       // rankings = new ABM<>();
-    }
-    public void addDiscount(Asset asset, int minPoints, int discount, Zone zone){
-        discounts.add(new Discount(asset, minPoints, discount, zone));
-    }
-    public void removeDiscount(Asset asset, Zone zone){
-        for( Discount d : discounts.getList()){
-            if (d.getType().equalsByType(asset) && d.getZone().equals(zone))
-                discounts.remove(d);
-        }
+        rankings = new HashMap<>();
     }
 
-   // public void startRanking()
+    public ABM<Discount> getDiscounts() {
+        return discounts;
+    }
 
-    //public void updateRanking(Zone zone, Client aClient, int points){//Al momento de finalizar el viaje, MoovMe le pasa a Scoring los puntos sumados por el cliente (mediante el invoice) en la zona indicada
-       // for(int i=0; i< rankings.getList().size(); i++){
-          //  if(rankings.getList().get(i).getZone().equals(zone))
-              //  rankings.getList().get(i).updateLeaders(aClient, points);
-    //    }
-   // }
+    private void updateRanking(ABM<Client> clientsABM){
+        for (Client client : clientsABM.getList()) {
+            for (Zone zone : client.getPointsPerZone().keySet()) {
+                if (rankings.containsKey(zone)) {
+                    if(!rankings.get(zone).contains(client))rankings.get(zone).add(new Leader(client.getAlias(), client.getPointsPerZone().get(zone)));
+                    else rankings.get(zone).get(rankings.get(zone).indexOf(client)).setPoints(client.getPointsPerZone().get(zone));
 
-    public void monthlyAwards(ABM<Zone> zones, ABM<Client> clients) {
-        for (Zone z: zones.getList()) {
-            for(Client c: clients.getList()){
-               // for(LeaderBoard m : rankings.getList()){
-                    //if(m.getZone().equals(z)) {
-                      //  for (int i = 0; i < 3; i++) {
-                          //  if (m.getLeaders().getList().get(i).equalsByName(c))
-                             //   c.setWinnerOfTheMonth(true);
-                        }
-                    }
+                }else {
+                    rankings.put(zone, new ArrayList<>());
+                    rankings.get(zone).add(new Leader(client.getAlias(), client.getPointsPerZone().get(zone)));
                 }
-           // }
-     //   }
-  //  }
-    public Discount discountFinder(){              //Es un metodo en general para encontrar los descuentos de la lista
-        int position = 0;
-        for(int i = 0; i < discounts.size(); i++){
-             position = i;
+                rankings.get(zone).sort((l1, l2) -> {
+                    int points1 = l1.getPoints();
+                    int points2 = l2.getPoints();
+
+                    return points2 - points1;
+                });
+            }
         }
-        return discounts.getList().get(position);
     }
 
-    public boolean validateDiscount(Client client, Zone zone) {
-        if (!discountFinder().getZone().equals(zone))
-            throw new IllegalArgumentException("We did not found the Zone specified");
-       // if (client.getPoints() >= discountFinder().getMinPoints())
-            //return true;
-        return false;
-     }
+    public HashMap<Zone, ArrayList<Leader>> getRankings(ABM<Client> clientsABM) {
+        updateRanking(clientsABM);
+        return rankings;
+    }
+    //El primer dia de cada mes se ejecuta este codigo para premiar a los tres primeros.
+    public void monthlyAwards(ABM<Client> clientsABM) {
+        for (Client client : clientsABM.getList()) {
+            for (Zone zone : rankings.keySet()) {
+                for (int i = 0; i < rankings.get(zone).size(); i++) {
+                    if (i<3 && rankings.get(zone).get(i).equals(client))
+                        client.setWinnerOfTheMonth(true);
+                    if (i==3) break;
+                }
+            }
+        }
+    }
+    public Discount findDiscount(Client client, Asset asset, Zone zone) throws EmptyStackException, InstanceNotFoundException {
+        int i = 0;
+        if (discounts.size() == 0) throw new EmptyStackException();
+        for (int j = 0; j < discounts.getList().size(); j++) {
+            if (foundValidDiscount(client, asset, zone, j)) {
+                i = j;
+                break;
+            }
+            else throw new InstanceNotFoundException("No hay descuento para esta zona y/o activo");
+        }
+        return discounts.getList().get(i);
+    }
 
-//Este metodo aplica el descuento sobre la tarifa a partir de la validacion del descuento, si el descuento no es valido la tarifa permanece igual
-    public double applyDiscount(Client client, Zone zone){
-        double newTariff;
-        if(validateDiscount(client, zone) == true) {
-            newTariff = tariff.pricePerMinute * discountFinder().getDiscount();
-        }
-        else{
-            newTariff = tariff.pricePerMinute;
-        }
-        return newTariff;
+    private boolean foundValidDiscount(Client client, Asset asset, Zone zone, int j) {
+        return discounts.getList().get(j).getZone().equals(zone) && discounts.getList().get(j).getMinPoints() <= client.getPoints().getCurrentPoints() && discounts.getList().get(j).getType().equals(asset.getType());
     }
 }

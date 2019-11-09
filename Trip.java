@@ -64,7 +64,7 @@ public class Trip {
                 }*/
             }
             //MULTA
-            if (anAsset.sameZone(t.getZone()) && !aClient.isBlocked()){
+            if (zone.equals(t.getZone()) && !aClient.isBlocked()){
                 finalPrice = t.getPricePerMinute()*getDurationOfTrip()*2;
                 aClient.addConsumption(new Consumption( finalPrice, endTime));
             }
@@ -78,7 +78,7 @@ public class Trip {
     }
 
     public int pointsSummary(Client aClient, Asset anAsset){
-        return Math.toIntExact(Math.round(anAsset.getType().getPoints()* anAsset.getZone().getIncrementPercent()*getDurationOfTrip()));
+        return Math.toIntExact(Math.round(anAsset.getType().getPoints()* zone.getIncrementPercent()*getDurationOfTrip()));
     }
 
     public boolean isAtTime(){

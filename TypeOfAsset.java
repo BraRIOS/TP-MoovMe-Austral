@@ -1,14 +1,14 @@
 public class TypeOfAsset {
-    private String type;
+    private String name;
     private int points;
 
-    public TypeOfAsset(String type, int points) {
-        this.type = type;
+    public TypeOfAsset(String name, int points) {
+        this.name = name;
         this.points = points;
     }
 
-    public String getType() {
-        return type;
+    public String getName() {
+        return name;
     }
 
     public int getPoints() {
@@ -21,6 +21,6 @@ public class TypeOfAsset {
 
     @Override
     public boolean equals(Object obj) {
-        return this.getType().equals(((Asset) obj).getType());
+        return name.equals(((TypeOfAsset) obj).getName());
     }
 }
