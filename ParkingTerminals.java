@@ -13,4 +13,12 @@ public class ParkingTerminals {
     public void pickUp(Asset asset){
         actives.remove(asset);
     }
+
+    public ABM<Asset> getActives() {
+        return actives;
+    }
+
+    public Zone getZone() {
+        return zone;
+    }
 }
