@@ -36,7 +36,7 @@ public class Trip {
     - El método retornara una factura que indica el precio a pagar, los puntos ganados y la hora en que finalizó el viaje
     */
     public Invoice FinishTrip(Client aClient, Asset anAsset, ABM<Tariff> tariffs, Discount aDiscount){
-        //endTime=DateTime.now(); //para funcionamiento en tiempo real!!!!
+        endTime=DateTime.now(); //para funcionamiento en tiempo real!!!!
         durationOfTrip=new Interval(startTime,endTime);
         double finalPrice = 0;
         int pointsAcquired = 0;
@@ -74,6 +74,10 @@ public class Trip {
 
     public void setEndTime(DateTime endTime) {//para demostracion de funcionamiento correcto
         this.endTime = endTime;
+    }
+
+    public DateTime getEndTime() {
+        return endTime;
     }
 }
 
