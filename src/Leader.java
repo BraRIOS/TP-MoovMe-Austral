@@ -1,4 +1,3 @@
-
 public class Leader extends User{
     private int points;
 
