@@ -6,7 +6,7 @@ public class Asset {
     public Asset(TypeOfAsset type,int id,String batchCode){
         this.type = type;
         this.id = id;
-        this.batchCode=batchCode;
+        this.batchCode = batchCode;
     }
 
     public int getId() {

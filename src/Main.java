@@ -5,36 +5,27 @@ import java.io.*;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException, InstanceNotFoundException {
+    public static void main(String[] args) {
 
-       // ObjectInputStream usersAMB = new ObjectInputStream(new FileInputStream("usersABM.file"));
+        MoovMe system = new MoovMe();
+        Scoring scoring = new Scoring();
+        ABM<Tariff> tariffs = new ABM<>();
+        RepositoryZones zones = new RepositoryZones();
+        Screen.setTime(new DateTime(DateTime.now()));
+        boolean exit = false;
 
-       // MoovMe system = new MoovMe((ABM<User>) usersAMB.readObject());
+        Screen.print("\n-*-*- WELCOME TO MOOVME -*-*-\n");
 
-       // system.addUser(new User("Mike"));
+        Screen.firstScreen(system);
 
-        //system.getUsers().clear();
-
-        //Screen.printABM(system.getUsers());
-
-        /*ABM<User> test = new ABM<>(0);
-        ABM<Score> test1 = new ABM<>(1);
-
-        FileOutputStream fos0 = new FileOutputStream("usersABM.file");
-        ObjectOutputStream oos0 = new ObjectOutputStream(fos0);
-        oos0.writeObject(test);
-
-        FileOutputStream fos1 = new FileOutputStream("scoresABM.file");
-        ObjectOutputStream oos1 = new ObjectOutputStream(fos1);
-        oos1.writeObject(test1);*/
-
+        /* First Test
         Zone tuquito=new Zone("Holi",20);
 
         Client bruno=new Client("Bruno",777);
         Client juan = new Client("juan",888);
 
         TypeOfAsset bici=new TypeOfAsset("Bicicleta",1000);
-        Asset asset = new Asset(bici,1250);
+        Asset asset = new Asset(bici,1250, "A");
         //bruno.addPointsToZone(tuquito,1000);
         //juan.addPointsToZone(tuquito,12000);
 
@@ -67,7 +58,7 @@ public class Main {
         ABM<Tariff> tariffABM=new ABM<>();
         tariffABM.add(new Tariff(777,tuquito));
         Trip narnia=new Trip(tuquito);
-        narnia.setEndTime(new DateTime(2019,11,10,23,00));
+        narnia.setEndTime(new DateTime(2019,11,9,22,46));
         narnia.FinishTrip(juan,asset,tariffABM,scoring.findDiscount(juan,asset,tuquito));
         System.out.println(juan.getPoints().getCurrentPoints());
         for (Discount discount : scoring.getDiscounts().getList()) {
@@ -77,12 +68,6 @@ public class Main {
         System.out.println(asset.getType().getName()+" "+tuquito.getName()+" "+juan.getPoints().getCurrentPoints());
 
         System.out.println(scoring.findDiscount(juan,asset,tuquito).getDiscount());
-
-
-
-
-
-
-
+        */
     }
 }
