@@ -4,7 +4,7 @@ public class Zone {
 
     public Zone(String name, int incrementPercent){
         this.name=name;
-        if(incrementPercent>=0 && incrementPercent<=100) this.incrementPercent = 1 + incrementPercent/100;
+        if(incrementPercent>=0 && incrementPercent<=100) this.incrementPercent = 1 + incrementPercent/100f;
     }
 
     public String getName() {

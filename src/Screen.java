@@ -75,33 +75,41 @@ public class Screen {
         if (entry == 0) exit();
         if (entry == 1) usersScreen(m);
         if (entry == 2) {
-            print("Zonas existentes:");
-            for(Zone z: m.getZones().getList())
-                print("\t" + z.getName());
-            m.getZones().add(new Zone(Scanner.getString("Nombre de la Zona: "), Scanner.getInt("Incremento: ")));
+            if (m.getZones().size() > 0) {
+                print("Zonas existentes:");
+                for (Zone z : m.getZones().getList())
+                    print("\t" + z.getName());
+            } else print("\tNo hay Zonas existentes.");
+            Zone zone = new Zone(Scanner.getString("Nombre de la Zona: "), Scanner.getInt("Incremento: "));
+            m.getZones().add(zone);
+            m.getTerminals().put(zone, new ArrayList<>());
             adminScreen(m);
         };
         if (entry == 3) {
             int zoneCounter = 0;
-            print("Elija una Zona para agregar terminal:");
-            for(Zone z: m.getZones().getList())
-                print("\t" + zoneCounter++ + ". " + z.getName());
-            int choose = Scanner.getInt("Entrada: ");
-            if (choose >= 0 && choose < zoneCounter) {
-                Zone zoneChoose = m.getZones().getList().get(choose);
-                ParkingTerminal terminal = new ParkingTerminal(zoneChoose, new Batch(Scanner.getInt("Cantidad de Activos: "), new TypeOfAsset(Scanner.getString("Nombre del Activo: "), Scanner.getInt("Puntos Base del Activo: "))));
-                if (!m.getTerminals().containsKey(zoneChoose))
-                    m.getTerminals().put(zoneChoose, new ArrayList<>());
-                m.getTerminals().get(zoneChoose).add(terminal);
-            }
+            if (m.getZones().size() > 0) {
+                print("Elija una Zona para agregar terminal:");
+                for(Zone z: m.getZones().getList())
+                    print("\t" + zoneCounter++ + ". " + z.getName());
+                int choose = Scanner.getInt("Entrada: ");
+                if (choose >= 0 && choose < zoneCounter) {
+                    Zone zoneChoose = m.getZones().getList().get(choose);
+                    ParkingTerminal terminal = new ParkingTerminal(zoneChoose, new Batch(Scanner.getInt("Cantidad de Activos: "), new TypeOfAsset(Scanner.getString("Nombre del Activo: "), Scanner.getInt("Puntos Base del Activo: "))));
+                    if (!m.getTerminals().containsKey(zoneChoose))
+                        m.getTerminals().put(zoneChoose, new ArrayList<>());
+                    m.getTerminals().get(zoneChoose).add(terminal);
+                }
+            } else print("\tNo hay Zonas existentes.");
             adminScreen(m);
         }
         if (entry == 4) {
             print("Terminales Existentes:");
             for(Zone z: m.getZones().getList()){
-                print("Zona: " + z.getName());
-                for (ParkingTerminal p: m.getTerminals().get(z))
-                    print("Activo: " + p.getTypeOfAsset().getName() + "\tPuntos Base: " + p.getTypeOfAsset().getPoints() + "\tCantidad: " + p.getActives().size());
+                print("Zona: " + z.getName() + "   Incremento: " + (Math.round((z.getIncrementPercent()-1)*100)) + "%");
+                if (m.getTerminals().get(z).size() > 0) {
+                    for (ParkingTerminal p : m.getTerminals().get(z))
+                        print("\tActivo: " + p.getTypeOfAsset().getName() + "\tPuntos Base: " + p.getTypeOfAsset().getPoints() + "\tCantidad: " + p.getActives().size());
+                } else print("\tNo hay terminales existentes.");
             }
             adminScreen(m);
         }
