@@ -1,7 +1,6 @@
 import org.joda.time.DateTime;
-
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 public class Screen {
 
@@ -18,7 +17,7 @@ public class Screen {
 
     public static void firstScreen(MoovMe m) {
         startScreen();
-        print("\t1. " + (activeUser.getAlias().equals("-----")? "Iniciar":"Cambiar") + " usuario.\n\t2. Cambiar hora.\n\t0. Salir.");
+        print("\t0. Salir.\n\t1. " + (activeUser.getAlias().equals("-----")? "Iniciar":"Cambiar") + " usuario.\n\t2. Cambiar hora.");
         int entry = Scanner.getInt("Entrada: ");
         if (entry == 1) usersScreen(m);
         if (entry == 2) changeTimeScreen(m);
@@ -45,12 +44,13 @@ public class Screen {
             print("\t" + (++clientCounter+adminCounter) + ". [Client] " + c.getAlias() + "\tTelefono: " + c.getPhone());
         int entry = Scanner.getInt("Entrada: ");
         if (entry == 0) {
-            print("\n\t1. Administrador.\n\t2. Cliente.");
+            print("\t1. Administrador.\n\t2. Cliente.");
             int type = Scanner.getInt("Entrada: ");
             if (type == 1) {
                 Administrator admin = new Administrator(Scanner.getString("Alias: "));
                 m.getAdmins().add(admin);
                 activeUser = admin;
+                adminScreen(m);
             }
             if (type == 2) {
                 Client client = new Client(Scanner.getString("Alias: "), Scanner.getInt("Telefono: "));
@@ -60,11 +60,72 @@ public class Screen {
         }
         if (entry > 0 && entry <= adminCounter) {
             activeUser = m.getAdmins().getList().get(adminCounter-1);
+            adminScreen(m);
         }
         if (entry > adminCounter && entry <= (adminCounter+clientCounter)) {
             activeUser = m.getClients().getList().get(clientCounter-1);
         }
         firstScreen(m);
+    }
+
+    public static void adminScreen(MoovMe m) {
+        startScreen();
+        print("\t0. Salir.\n\t1. Cambiar usuario.\n\t2. Crear zona.\n\t3. Crear terminal y asignar lote.\n\t4. Ver Terminales.\n\t5. Bloquear o Desbloquear Cliente.\n\t6. Volver a Inicio.");
+        int entry = Scanner.getInt("Entrada: ");
+        if (entry == 0) exit();
+        if (entry == 1) usersScreen(m);
+        if (entry == 2) {
+            print("Zonas existentes:");
+            for(Zone z: m.getZones().getList())
+                print("\t" + z.getName());
+            m.getZones().add(new Zone(Scanner.getString("Nombre de la Zona: "), Scanner.getInt("Incremento: ")));
+            adminScreen(m);
+        };
+        if (entry == 3) {
+            int zoneCounter = 0;
+            print("Elija una Zona para agregar terminal:");
+            for(Zone z: m.getZones().getList())
+                print("\t" + zoneCounter++ + ". " + z.getName());
+            int choose = Scanner.getInt("Entrada: ");
+            if (choose >= 0 && choose < zoneCounter) {
+                Zone zoneChoose = m.getZones().getList().get(choose);
+                ParkingTerminal terminal = new ParkingTerminal(zoneChoose, new Batch(Scanner.getInt("Cantidad de Activos: "), new TypeOfAsset(Scanner.getString("Nombre del Activo: "), Scanner.getInt("Puntos Base del Activo: "))));
+                if (!m.getTerminals().containsKey(zoneChoose))
+                    m.getTerminals().put(zoneChoose, new ArrayList<>());
+                m.getTerminals().get(zoneChoose).add(terminal);
+            }
+            adminScreen(m);
+        }
+        if (entry == 4) {
+            print("Terminales Existentes:");
+            for(Zone z: m.getZones().getList()){
+                print("Zona: " + z.getName());
+                for (ParkingTerminal p: m.getTerminals().get(z))
+                    print("Activo: " + p.getTypeOfAsset().getName() + "\tPuntos Base: " + p.getTypeOfAsset().getPoints() + "\tCantidad: " + p.getActives().size());
+            }
+            adminScreen(m);
+        }
+        if (entry == 5) {
+            print("Lista de Clientes:");
+            int clientCounter = 0;
+            for(Client c: m.getClients().getList())
+                print("\t" + clientCounter++ + ". " + c.getAlias() + "   [" + (c.isBlocked()? "Bloqueado":"Desbloqueado") + "]");
+            int clientChoose = Scanner.getInt("Elija un Cliente: ");
+            Client client = m.getClients().getList().get(clientChoose);
+            if (clientChoose >= 0 && clientChoose < clientCounter) {
+                print("\t0. Bloquear.\n\t1. Desbloquear.");
+                int choose = Scanner.getInt("Entrada: ");
+                if (choose == 0) client.block();
+                if (choose == 1) client.unBlock();
+            }
+            adminScreen(m);
+        }
+        if (entry == 6) firstScreen(m);
+    }
+
+    public static void clientScreen(MoovMe m) {
+        startScreen();
+        print("\t0. Salir.\n\t1. ");
     }
 
     public static void changeTimeScreen(MoovMe m) {
