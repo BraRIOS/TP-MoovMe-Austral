@@ -1,8 +1,5 @@
 import org.joda.time.DateTime;
 
-import javax.management.InstanceNotFoundException;
-import java.io.*;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -12,6 +9,6 @@ public class Main {
 
         Screen.print("\n***** WELCOME TO MOOVME *****\n");
 
-        Screen.firstScreen(system);
+        Screen.mainScreen(system);
     }
 }

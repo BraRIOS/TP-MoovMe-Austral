@@ -15,9 +15,10 @@ public class Screen {
         print(line);
     }
 
-    public static void firstScreen(MoovMe m) {
+    public static void mainScreen(MoovMe m) {
         startScreen();
         print("\t0. Salir.\n\t1. " + (activeUser.getAlias().equals("-----")? "Iniciar":"Cambiar") + " usuario.\n\t2. Cambiar hora.");
+        print("\t3. Ver rankings. [NOT YET]");
         int entry = Scanner.getInt("Entrada: ");
         if (entry == 1) usersScreen(m);
         if (entry == 2) changeTimeScreen(m);
@@ -56,6 +57,7 @@ public class Screen {
                 Client client = new Client(Scanner.getString("Alias: "), Scanner.getInt("Telefono: "));
                 m.getClients().add(client);
                 activeUser = client;
+                clientScreen(m);
             }
         }
         if (entry > 0 && entry <= adminCounter) {
@@ -64,13 +66,15 @@ public class Screen {
         }
         if (entry > adminCounter && entry <= (adminCounter+clientCounter)) {
             activeUser = m.getClients().getList().get(clientCounter-1);
+            clientScreen(m);
         }
-        firstScreen(m);
+        mainScreen(m);
     }
 
     public static void adminScreen(MoovMe m) {
         startScreen();
-        print("\t0. Salir.\n\t1. Cambiar usuario.\n\t2. Crear zona.\n\t3. Crear terminal y asignar lote.\n\t4. Ver Terminales.\n\t5. Bloquear o Desbloquear Cliente.\n\t6. Volver a Inicio.");
+        print("\t0. Salir.\n\t1. Cambiar usuario.\n\t2. Crear zona.\n\t3. Crear terminal y asignar lote.");
+        print("\t4. Ver Terminales.\n\t5. Bloquear o Desbloquear Cliente.\n\t6. Volver a Inicio.");
         int entry = Scanner.getInt("Entrada: ");
         if (entry == 0) exit();
         if (entry == 1) usersScreen(m);
@@ -128,12 +132,15 @@ public class Screen {
             }
             adminScreen(m);
         }
-        if (entry == 6) firstScreen(m);
+        if (entry == 6) mainScreen(m);
     }
 
     public static void clientScreen(MoovMe m) {
         startScreen();
-        print("\t0. Salir.\n\t1. ");
+        print("\t0. Salir.\n\t1. Cambiar usuario.\n\t2. ");
+        int entry = Scanner.getInt("Entrada: ");
+        if (entry == 0) exit();
+        if (entry == 1) usersScreen(m);
     }
 
     public static void changeTimeScreen(MoovMe m) {
