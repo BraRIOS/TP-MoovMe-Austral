@@ -6,6 +6,22 @@ public class Client extends User {
     private HashMap<Zone,Integer> pointsPerZone;
     private Score points;
     private ABM<Consumption> travelHistory;
+
+    public void alquilar(Trip t) {
+        actualTrip = t;
+        inTrip = true;
+    }
+
+    public Trip getActualTrip() {
+        return actualTrip;
+    }
+
+    public boolean isInTrip() {
+        return inTrip;
+    }
+
+    private Trip actualTrip;
+    private boolean inTrip;
     private boolean winnerOfTheMonth;
 
     public Client(String alias, int phone) {
@@ -16,6 +32,8 @@ public class Client extends User {
         travelHistory= new ABM<>();
         winnerOfTheMonth = false;
         pointsPerZone = new HashMap<>();
+        actualTrip = null;
+        inTrip = false;
     }
 
     public boolean isBlocked(){return blocked;}

@@ -9,8 +9,8 @@ public class Trip {
     private float bonus;
     private Zone zone;
 
-    public Trip(Zone aZone) {//Se crea una instancia de viaje cada vez que un cliente inicie un viaje por pantalla (MoovMe)
-        startTime = DateTime.now();
+    public Trip(Zone aZone, DateTime dateTime) {//Se crea una instancia de viaje cada vez que un cliente inicie un viaje por pantalla (MoovMe)
+        startTime = dateTime;
         deliveryTime = null;
         bonus=0;
         zone=aZone;
@@ -18,8 +18,8 @@ public class Trip {
     }
 
     //setear hora de entrega opcional
-    public void setDeliveryTime(int hour,int minute) {
-        this.deliveryTime = new DateTime(DateTime.now().getYear(),DateTime.now().getMonthOfYear(),DateTime.now().getDayOfMonth(),hour,minute);
+    public void setDeliveryTime(DateTime dateTime) {
+        this.deliveryTime = dateTime;
         bonus=0.2f;
     }
 

@@ -10,6 +10,12 @@ public class MoovMe {
     private ABM<Zone> zones;
     private HashMap<Zone, ArrayList<ParkingTerminal>> terminals;
 
+    public HashMap<Client, Asset> getAssetsInUse() {
+        return assetsInUse;
+    }
+
+    private HashMap<Client, Asset> assetsInUse;
+
     public MoovMe() {
         clients = new ABM<>();
         admins = new ABM<>();
@@ -17,6 +23,7 @@ public class MoovMe {
         tariffs = new ABM<>();
         zones = new ABM<>();
         terminals = new HashMap<>();
+        assetsInUse = new HashMap<>();
 
     }
 
