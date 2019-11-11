@@ -1,6 +1,9 @@
 import org.joda.time.DateTime;
+
+import javax.management.InstanceNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 
 public class Screen {
 
@@ -16,7 +19,7 @@ public class Screen {
         print(line);
     }
 
-    public static void mainScreen(MoovMe m) {
+    public static void mainScreen(MoovMe m) throws InstanceNotFoundException, EmptyStackException {
         startScreen();
         print("\t0. Salir.\n\t1. " + (activeUser.getAlias().equals("-----")? "Iniciar":"Cambiar") + " usuario.\n\t2. Cambiar hora.");
         print("\t3. Ver rankings. [NOT YET]");
@@ -31,17 +34,18 @@ public class Screen {
             int hour = time.getHourOfDay();
             int minute = time.getMinuteOfHour();
             if (choose == 0) time = new DateTime(Scanner.getInt("Año: "), month, day, hour, minute);
-            if (choose == 1) time = new DateTime(year, Scanner.getInt("Mes: "), day, hour, minute);
-            if (choose == 2) time = new DateTime(year, month, Scanner.getInt("Dia: "), hour, minute);
-            if (choose == 3) time = new DateTime(year, month, day, Scanner.getInt("Hora: "), minute);
-            if (choose == 4) time = new DateTime(year, month, day, hour, Scanner.getInt("Minuto: "));
-            if (choose == 5) time = new DateTime(Scanner.getInt("Año: "),Scanner.getInt("Mes: "),Scanner.getInt("Dia: "),Scanner.getInt("Hora: "),Scanner.getInt("Minuto: "));
+            else if (choose == 1) time = new DateTime(year, Scanner.getInt("Mes: "), day, hour, minute);
+            else if (choose == 2) time = new DateTime(year, month, Scanner.getInt("Dia: "), hour, minute);
+            else if (choose == 3) time = new DateTime(year, month, day, Scanner.getInt("Hora: "), minute);
+            else if (choose == 4) time = new DateTime(year, month, day, hour, Scanner.getInt("Minuto: "));
+            else if (choose == 5) time = new DateTime(Scanner.getInt("Año: "),Scanner.getInt("Mes: "),Scanner.getInt("Dia: "),Scanner.getInt("Hora: "),Scanner.getInt("Minuto: "));
+            else System.out.println("ENTRADA INVÁLIDA");
             mainScreen(m);
         }
         if (entry == 0) exit();
     }
 
-    public static void usersScreen(MoovMe m) {
+    public static void usersScreen(MoovMe m) throws InstanceNotFoundException, EmptyStackException {
         startScreen();
         int adminCounter = 0;
         int clientCounter = 0;
@@ -79,7 +83,7 @@ public class Screen {
         mainScreen(m);
     }
 
-    public static void adminScreen(MoovMe m) {
+    public static void adminScreen(MoovMe m) throws InstanceNotFoundException, EmptyStackException {
         startScreen();
         print("\t0. Salir.\n\t1. Cambiar usuario.\n\t2. Crear zona.\n\t3. Crear terminal y asignar lote.");
         print("\t4. Ver Terminales.\n\t5. Bloquear o Desbloquear Cliente.\n\t6. Agregar Descuento.");
@@ -131,15 +135,18 @@ public class Screen {
         if (entry == 5) {
             print("Lista de Clientes:");
             int clientCounter = 0;
-            for(Client c: m.getClients().getList())
-                print("\t" + clientCounter++ + ". " + c.getAlias() + "   [" + (c.isBlocked()? "Bloqueado":"Desbloqueado") + "]");
-            int clientChoose = Scanner.getInt("Elija un Cliente: ");
-            Client client = m.getClients().getList().get(clientChoose);
-            if (clientChoose >= 0 && clientChoose < clientCounter) {
-                print("\t0. Bloquear.\n\t1. Desbloquear.");
-                int choose = Scanner.getInt("Entrada: ");
-                if (choose == 0) client.block();
-                if (choose == 1) client.unBlock();
+            if (m.getClients().size()==0) {print("\tPrimero se deben ingresar clientes al sistema");}
+            else {
+                for (Client c : m.getClients().getList())
+                    print("\t" + clientCounter++ + ". " + c.getAlias() + "   [" + (c.isBlocked() ? "Bloqueado" : "Desbloqueado") + "]");
+                int clientChoose = Scanner.getInt("Elija un Cliente: ");
+                Client client = m.getClients().getList().get(clientChoose);
+                if (clientChoose >= 0 && clientChoose < clientCounter) {
+                    print("\t0. Bloquear.\n\t1. Desbloquear.");
+                    int choose = Scanner.getInt("Entrada: ");
+                    if (choose == 0) client.block();
+                    if (choose == 1) client.unBlock();
+                }
             }
             adminScreen(m);
         }
@@ -189,7 +196,7 @@ public class Screen {
         if (entry == 8) mainScreen(m);
     }
 
-    public static void clientScreen(MoovMe m) {
+    public static void clientScreen(MoovMe m) throws InstanceNotFoundException, EmptyStackException {
         startScreen();
         print("\t0. Salir.\n\t1. Cambiar usuario.\n\t2. Iniciar Viaje.\n\t3. Finalizar Viaje.");
         int entry = Scanner.getInt("Entrada: ");
@@ -215,6 +222,12 @@ public class Screen {
             int typeChoose = Scanner.getInt("Elija un Activo: ");
             Asset assetChoose = assets.get(typeChoose);
             ((Client) activeUser).alquilar(new Trip(zoneChoose, time));
+            print("¿Desea definir una hora de entrega? (Se otorgara un bonus de puntos si se cumple con el plazo de entrega)\n\t0. Si.\n\t1. No.");
+            int selection = Scanner.getInt("Entrada: ");
+            if (selection==0) {
+                ((Client) activeUser).getActualTrip().setDeliveryTime(new DateTime(time.getYear(),time.getMonthOfYear(),time.getDayOfMonth(),Scanner.getInt("Hora: "),Scanner.getInt("Minutos: ")));
+                printDateTime(((Client) activeUser).getActualTrip().getDeliveryTime());
+            }
             m.getAssetsInUse().put(((Client) activeUser), assetChoose);
             for(ParkingTerminal p: m.getTerminals().get(zoneChoose)) {
                 if (p.getActives().contains(assetChoose)) {
@@ -223,21 +236,52 @@ public class Screen {
                     break;
                 }
             }
+            clientScreen(MoovMe m);
         }
-        if (entry == 4) {
-            Client manageClient = m.getClients().getList().get(m.getClients().getList().indexOf(activeUser));
-            if(manageClient.isInTrip())
-                manageClient.getActualTrip().FinishTrip(manageClient,m.getAssetsInUse().get(manageClient),m.getTariffs(), null);
-            activeUser = manageClient;
+        if (entry == 3) {
+            if(!((Client)activeUser).isInTrip()) print("Por favor inicie un viaje");
+            else {
+                print("Indique el tiempo de finalización");
+                setTime(new DateTime(time.getYear(),time.getMonthOfYear(),time.getDayOfMonth(),Scanner.getInt("Hora: "),Scanner.getInt("Minutos: ")));
+                ((Client)activeUser).getActualTrip().setEndTime(time);
+
+                try{
+                    Discount discount = m.getScoring().findDiscount(((Client)activeUser),m.getAssetsInUse().get(((Client)activeUser)),((Client)activeUser).getActualTrip().getZone())
+                    print("¿Hay un descuento disponible, desea usarlo?" + "Puntos requeridos: " +discount.getMinPoints() +"\t\tPuntos actuales: "+((Client)activeUser).getPoints().getCurrentPoints() + "\nDescuento: " + discount.getDiscount()*100d + "%\n\t0. Si.\n\t1. No.");
+                    int selection = Scanner.getInt("Entrada: ");
+                    if(selection==0){
+                        Invoice invoice=((Client)activeUser).getActualTrip().FinishTrip((Client)activeUser,m.getAssetsInUse().get(((Client)activeUser)),m.getTariffs(), discount);
+                        print("Hora de finalización: " + printDateTime(invoice.getEndTime()) +"\nPuntos adquiridos: " + invoice.getPointsAcquired() + "\nTotal: " + invoice.getFinalPrice());
+                    }
+                    if(selection==1){
+                        Invoice invoice = ((Client)activeUser).getActualTrip().FinishTrip((Client)activeUser,m.getAssetsInUse().get(((Client)activeUser)),m.getTariffs(), null);
+                        print("Hora de finalización: " + printDateTime(invoice.getEndTime()) +"\nPuntos adquiridos: " + invoice.getPointsAcquired() + "\nTotal: " + invoice.getFinalPrice());
+                    }
+                }
+                catch (EmptyStackException | InstanceNotFoundException in){
+                    Invoice invoice = ((Client)activeUser).getActualTrip().FinishTrip((Client)activeUser,m.getAssetsInUse().get(((Client)activeUser)),m.getTariffs(), null);
+                    print("Hora de finalización: " + printDateTime(invoice.getEndTime()) +"\nPuntos adquiridos: " + invoice.getPointsAcquired() + "\nTotal: " + invoice.getFinalPrice());
+                }
+                for(ParkingTerminal p: m.getTerminals().get(((Client)activeUser).getActualTrip().getZone())) {
+                    if (p.getActives().contains(m.getAssetsInUse().get(((Client)activeUser)))) {
+                        p.getActives().add(m.getAssetsInUse().get(((Client)activeUser)));
+                        m.getClients().modify(clientInUse, (Client) activeUser);
+                        break;
+                    }
+                }
+            }
         }
     }
 
     private static void startScreen() {
         clrCmd();
-        print("Usuario: " + activeUser.getAlias() + "\t\t Tiempo: " + printDateTime());
+        print("Usuario: " + activeUser.getAlias() + "\t\t Tiempo: " + printTime());
     }
 
-    private static String printDateTime() {
+    private static String printTime() {
+        return time.toString().substring(0, 10) + " " + time.toString().substring(11,16);
+    }
+    private static String printDateTime(DateTime time) {
         return time.toString().substring(0, 10) + " " + time.toString().substring(11,16);
     }
 
