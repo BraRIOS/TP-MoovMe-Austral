@@ -23,7 +23,7 @@ public class Client extends User {
     public void finishTrip() {
         this.inTrip = false;
     }
-
+    private Invoice invoiceToShow;
     private Trip actualTrip;
     private boolean inTrip;
     private boolean winnerOfTheMonth;
@@ -75,5 +75,13 @@ public class Client extends User {
 
     public void setWinnerOfTheMonth(boolean winnerOfTheMonth) {
         this.winnerOfTheMonth = winnerOfTheMonth;
+    }
+
+    public void setInvoiceToShow(Invoice invoiceToShow) {
+        this.invoiceToShow = invoiceToShow;
+    }
+
+    public Invoice getInvoiceToShow() {
+        return invoiceToShow;
     }
 }

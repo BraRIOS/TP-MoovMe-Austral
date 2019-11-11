@@ -85,5 +85,9 @@ public class Trip implements Serializable {
     public Zone getZone() {
         return zone;
     }
+
+    public DateTime getStartTime() {
+        return startTime;
+    }
 }
 

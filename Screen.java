@@ -162,7 +162,16 @@ public class Screen {
                 if (clientChoose >= 0 && clientChoose < clientCounter) {
                     print("\t0. Bloquear.\n\t1. Desbloquear.");
                     int choose = Scanner.getInt("Entrada: ");
-                    if (choose == 0) client.block();
+                    if (choose == 0) {
+                        client.block();
+                        print("El usuario ha sido bloqueado\n");
+                        if (client.isInTrip()) {
+                            print("Un viaje estaba en curso y ha sido finalizado");
+                            client.finishTrip();
+                            client.getActualTrip().setEndTime(time);
+                            client.setInvoiceToShow(client.getActualTrip().FinishTrip(client, m.getAssetsInUse().get(client), m.getTariffs(), null));
+                        }
+                    }
                     if (choose == 1) client.unBlock();
                 }
             }
@@ -216,51 +225,61 @@ public class Screen {
 
     public static void clientScreen(MoovMe m) throws InstanceNotFoundException, EmptyStackException, IOException {
         startScreen();
-        print("\t0. Salir.\n\t1. Cambiar usuario.\n\t2. Iniciar Viaje.\n\t3. Finalizar Viaje.");
+        print("\t0. Salir de la aplicación.\n\t1. Cambiar usuario.\n\t2. Iniciar Viaje.\n\t3. Finalizar Viaje.\n\t4. Volver al menú principal");
         int entry = Scanner.getInt("Entrada: ");
         if (entry == 0) exit(m);
         if (entry == 1) usersScreen(m);
         if (entry == 2) {
-            if (((Client) activeUser).isInTrip()) print("Ya hay un viaje en curso en "+((Client) activeUser).getActualTrip().getZone().getName());
+            if (((Client) activeUser).isBlocked()){
+                print("Usted está bloqueado\n");
+                if (((Client) activeUser).getInvoiceToShow()!=null)
+                print("Su viaje en curso ha sido finalizado\n\tHora de finalización: " + printDateTime(((Client) activeUser).getInvoiceToShow().getEndTime()) +"\nPuntos adquiridos: " + ((Client) activeUser).getInvoiceToShow().getPointsAcquired() + "\nTotal: " + ((Client) activeUser).getInvoiceToShow().getFinalPrice());
+                ((Client) activeUser).setInvoiceToShow(null);
+            }
+            else if (((Client) activeUser).isInTrip()) print("Ya hay un viaje en curso en "+((Client) activeUser).getActualTrip().getZone().getName());
             else {
                 print("Elija una zona:");
-                int zoneCounter = 0;
-                int assetCounter = 0;
-                ArrayList<Asset> assets = new ArrayList<>();
-                for (Zone z : m.getZones().getList())
-                    print("\t" + zoneCounter++ + ". " + z.getName());
-                int choose = Scanner.getInt("Entrada: ");
-                Zone zoneChoose = m.getZones().getList().get(choose);
-                for (ParkingTerminal p : m.getTerminals().get(zoneChoose)) {
-                    if (p.getActives().size() > 0)
-                        if (!assets.contains(p.getActives().get(0)))
-                            assets.add(p.getActives().get(0));
-                }
-                for (Asset a : assets) {
-                    print("\t" + assetCounter++ + ". " + a.getType().getName());
-                }
-                int typeChoose = Scanner.getInt("Elija un Activo: ");
-                Asset assetChoose = assets.get(typeChoose);
-                ((Client) activeUser).alquilar(new Trip(zoneChoose, time));
-                print("¿Desea definir una hora de entrega? (Se otorgara un bonus de puntos si se cumple con el plazo de entrega)\n\t0. Si.\n\t1. No.");
-                int selection = Scanner.getInt("Entrada: ");
-                if (selection == 0) {
-                    ((Client) activeUser).getActualTrip().setDeliveryTime(new DateTime(time.getYear(), time.getMonthOfYear(), time.getDayOfMonth(), Scanner.getInt("Hora: "), Scanner.getInt("Minutos: ")));
-                    printDateTime(((Client) activeUser).getActualTrip().getDeliveryTime());
-                }
-                m.getAssetsInUse().put(((Client) activeUser), assetChoose);
-                for (ParkingTerminal p : m.getTerminals().get(zoneChoose)) {
-                    if (p.getActives().contains(assetChoose)) {
-                        p.getActives().remove(assetChoose);
-                        m.getClients().modify(clientInUse, (Client) activeUser);
-                        break;
+                if(m.getZones().size() == 0) print("\tNo hay zonas disponibles\n");
+                else {
+                    int zoneCounter = 0;
+                    int assetCounter = 0;
+                    ArrayList<Asset> assets = new ArrayList<>();
+                    for (Zone z : m.getZones().getList())
+                        print("\t" + zoneCounter++ + ". " + z.getName());
+                    int choose = Scanner.getInt("Entrada: ");
+                    Zone zoneChoose = m.getZones().getList().get(choose);
+                    for (ParkingTerminal p : m.getTerminals().get(zoneChoose)) {
+                        if (p.getActives().size() > 0)
+                            if (!assets.contains(p.getActives().get(0)))
+                                assets.add(p.getActives().get(0));
+                    }
+                    for (Asset a : assets) {
+                        print("\t" + assetCounter++ + ". " + a.getType().getName());
+                    }
+                    int typeChoose = Scanner.getInt("Elija un Activo: ");
+                    Asset assetChoose = assets.get(typeChoose);
+                    ((Client) activeUser).alquilar(new Trip(zoneChoose, time));
+                    print("¿Desea definir una hora de entrega? (Se otorgara un bonus de puntos si se cumple con el plazo de entrega)\n\t0. Si.\n\t1. No.");
+                    int selection = Scanner.getInt("Entrada: ");
+                    if (selection == 0) {
+                        ((Client) activeUser).getActualTrip().setDeliveryTime(new DateTime(time.getYear(), time.getMonthOfYear(), time.getDayOfMonth(), Scanner.getInt("Hora: "), Scanner.getInt("Minutos: ")));
+                        printDateTime(((Client) activeUser).getActualTrip().getDeliveryTime());
+                    }
+                    m.getAssetsInUse().put(((Client) activeUser), assetChoose);
+                    for (ParkingTerminal p : m.getTerminals().get(zoneChoose)) {
+                        if (p.getActives().contains(assetChoose)) {
+                            p.getActives().remove(assetChoose);
+                            m.getClients().modify(clientInUse, (Client) activeUser);
+                            break;
+                        }
                     }
                 }
             }
             clientScreen(m);
         }
         if (entry == 3) {
-            if(!((Client)activeUser).isInTrip()) print("Por favor inicie un viaje");
+            if (((Client)activeUser).isBlocked()) print("Usted está bloqueado");
+            else if(!((Client)activeUser).isInTrip()) print("Por favor inicie un viaje");
             else {
                 print("Indique el tiempo de finalización");
                 boolean state=true;
@@ -298,6 +317,7 @@ public class Screen {
             }
             clientScreen(m);
         }
+        if (entry == 4){activeUser=new User("-----");mainScreen(m);}
     }
 
     private static void startScreen() {
