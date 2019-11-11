@@ -1,4 +1,9 @@
-public class TypeOfAsset {
+import java.io.Serializable;
+
+public class TypeOfAsset implements Serializable {
+
+    private static final long serialVersionUID = 1234067890L;
+
     private String name;
     private int points;
 

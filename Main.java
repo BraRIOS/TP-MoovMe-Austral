@@ -1,15 +1,24 @@
 import org.joda.time.DateTime;
 
 import javax.management.InstanceNotFoundException;
-import java.util.Date;
+import java.io.*;
 import java.util.EmptyStackException;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
 
-        MoovMe system = new MoovMe();
-        Screen.setTime(new DateTime(DateTime.now()));
+        FileInputStream fis = new FileInputStream("dataRestore.file");
+        ObjectInputStream ois = new ObjectInputStream(fis);
+
+        MoovMe system = (MoovMe) ois.readObject();
+
+        /*MoovMe system = new MoovMe();
+
+        FileOutputStream fos = new FileOutputStream("dataRestore.file");
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+        oos.writeObject(system);*/
 
         Screen.print("\n***** WELCOME TO MOOVME *****\n");
 

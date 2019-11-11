@@ -1,6 +1,10 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ParkingTerminal {
+public class ParkingTerminal implements Serializable {
+
+    private static final long serialVersionUID = 1034567890L;
+
     private ArrayList<Asset> actives;
     private Zone zone;
     private TypeOfAsset typeOfAsset;

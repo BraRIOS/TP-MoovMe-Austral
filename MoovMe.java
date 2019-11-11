@@ -1,7 +1,10 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MoovMe {
+public class MoovMe implements Serializable {
+
+    private static final long serialVersionUID = 111111111L;
 
     private ABM<Client> clients;
     private ABM<Administrator> admins;

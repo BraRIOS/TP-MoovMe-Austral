@@ -1,4 +1,9 @@
-public class Score {
+import java.io.Serializable;
+
+public class Score implements Serializable {
+
+    private static final long serialVersionUID = 1234567800L;
+
     private int totalPoints;
     private int spentPoints;//refleja los puntos gastados en los descuentos
 

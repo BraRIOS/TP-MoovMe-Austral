@@ -1,6 +1,11 @@
 import org.joda.time.DateTime;
 
-public class Consumption {
+import java.io.Serializable;
+
+public class Consumption implements Serializable {
+
+    private static final long serialVersionUID = 1234507890L;
+
     private double consumptionPrice;
     private DateTime endTime;
 

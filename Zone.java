@@ -1,4 +1,9 @@
-public class Zone {
+import java.io.Serializable;
+
+public class Zone implements Serializable {
+
+    private static final long serialVersionUID = 1230567890L;
+
     private String name;
     private double incrementPercent;
 

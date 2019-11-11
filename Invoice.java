@@ -1,6 +1,11 @@
 import org.joda.time.DateTime;
 
-public class Invoice {
+import java.io.Serializable;
+
+public class Invoice implements Serializable {
+
+    private static final long serialVersionUID = 1230567890L;
+
     private int pointsAcquired;
     private double finalPrice;
     private DateTime endTime;

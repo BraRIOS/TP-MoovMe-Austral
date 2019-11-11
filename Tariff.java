@@ -1,4 +1,9 @@
-public class Tariff {
+import java.io.Serializable;
+
+public class Tariff implements Serializable {
+
+    private static final long serialVersionUID = 1234560890L;
+
     private double pricePerMinute;
     private Zone zone;
 

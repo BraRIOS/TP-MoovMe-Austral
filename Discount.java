@@ -1,4 +1,9 @@
-public class Discount {
+import java.io.Serializable;
+
+public class Discount implements Serializable {
+
+    private static final long serialVersionUID = 1234067890L;
+
     private TypeOfAsset type;
     private int minPoints;
     private double discount;

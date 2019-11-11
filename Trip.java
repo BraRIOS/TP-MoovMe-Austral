@@ -1,7 +1,12 @@
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
-public class Trip {
+import java.io.Serializable;
+
+public class Trip implements Serializable {
+
+    private static final long serialVersionUID = 1234507890L;
+
     private DateTime startTime;//tiempo en que alquila el activo
     private DateTime endTime;//tiempo en que devuelve el activo
     private DateTime deliveryTime;//hora opcional para devolver el activo y obtener mas puntos
@@ -56,6 +61,7 @@ public class Trip {
                 aClient.addConsumption(new Consumption( finalPrice, endTime));
             }
         }
+        aClient.finishTrip();
         return new Invoice(pointsAcquired, finalPrice, endTime);
     }
 

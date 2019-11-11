@@ -1,7 +1,10 @@
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class ABM <T> {
+public class ABM <T> implements Serializable {
+
+    private static final long serialVersionUID = 1234567890L;
     
     private HashSet<T> memory = new HashSet<>();
 

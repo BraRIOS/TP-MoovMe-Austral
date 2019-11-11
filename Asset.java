@@ -1,4 +1,9 @@
-public class Asset {
+import java.io.Serializable;
+
+public class Asset implements Serializable {
+
+    private static final long serialVersionUID = 1234567090L;
+
     private TypeOfAsset type;
     private int id;
     private String batchCode;

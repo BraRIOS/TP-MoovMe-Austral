@@ -1,7 +1,10 @@
 import org.joda.time.DateTime;
 
 import javax.management.InstanceNotFoundException;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 
@@ -12,7 +15,7 @@ public class Screen {
     private static Client clientInUse = null;
     private static DateTime time = DateTime.now();
 
-    public static void mainScreen(MoovMe m) throws InstanceNotFoundException, EmptyStackException {
+    public static void mainScreen(MoovMe m) throws InstanceNotFoundException, EmptyStackException, IOException {
         startScreen();
         print("\t0. Salir.\n\t1. " + (activeUser.getAlias().equals("-----")? "Iniciar":"Cambiar") + " usuario.\n\t2. Cambiar hora.");
         print("\t3. Ver rankings.");
@@ -57,10 +60,10 @@ public class Screen {
         }
         if (entry == 4) {m.getScoring().monthlyAwards(m.getClients());print("Se entregaron los premios del mes");mainScreen(m); }
 
-        if (entry == 0) exit();
+        if (entry == 0) exit(m);
     }
 
-    public static void usersScreen(MoovMe m) throws InstanceNotFoundException, EmptyStackException {
+    public static void usersScreen(MoovMe m) throws InstanceNotFoundException, EmptyStackException, IOException {
         startScreen();
         int adminCounter = 0;
         int clientCounter = 0;
@@ -92,19 +95,19 @@ public class Screen {
             adminScreen(m);
         }
         if (entry > adminCounter && entry <= (adminCounter+clientCounter)) {
-            activeUser = m.getClients().getList().get(clientCounter-1);
+            activeUser = m.getClients().getList().get(entry-adminCounter-1);
             clientScreen(m);
         }
         mainScreen(m);
     }
 
-    public static void adminScreen(MoovMe m) throws InstanceNotFoundException, EmptyStackException {
+    public static void adminScreen(MoovMe m) throws InstanceNotFoundException, EmptyStackException, IOException {
         startScreen();
         print("\t0. Salir.\n\t1. Cambiar usuario.\n\t2. Crear zona.\n\t3. Crear terminal y asignar lote.");
         print("\t4. Ver Terminales.\n\t5. Bloquear o Desbloquear Cliente.\n\t6. Agregar Descuento.");
         print("\t7. Ver Descuentos.\n\t8. Volver a Inicio.");
         int entry = Scanner.getInt("Entrada: ");
-        if (entry == 0) exit();
+        if (entry == 0) exit(m);
         if (entry == 1) usersScreen(m);
         if (entry == 2) {
             if (m.getZones().size() > 0) {
@@ -211,44 +214,47 @@ public class Screen {
         if (entry == 8) mainScreen(m);
     }
 
-    public static void clientScreen(MoovMe m) throws InstanceNotFoundException, EmptyStackException {
+    public static void clientScreen(MoovMe m) throws InstanceNotFoundException, EmptyStackException, IOException {
         startScreen();
         print("\t0. Salir.\n\t1. Cambiar usuario.\n\t2. Iniciar Viaje.\n\t3. Finalizar Viaje.");
         int entry = Scanner.getInt("Entrada: ");
-        if (entry == 0) exit();
+        if (entry == 0) exit(m);
         if (entry == 1) usersScreen(m);
         if (entry == 2) {
-            print("Elija una zona:");
-            int zoneCounter = 0;
-            int assetCounter = 0;
-            ArrayList<Asset> assets = new ArrayList<>();
-            for(Zone z: m.getZones().getList())
-                print("\t" + zoneCounter++ + ". " + z.getName());
-            int choose = Scanner.getInt("Entrada: ");
-            Zone zoneChoose = m.getZones().getList().get(choose);
-            for(ParkingTerminal p: m.getTerminals().get(zoneChoose)) {
-                if (p.getActives().size() > 0)
-                    if (!assets.contains(p.getActives().get(0)))
-                        assets.add(p.getActives().get(0));
-            }
-            for(Asset a: assets) {
-                print("\t" + assetCounter++ + ". " + a.getType().getName());
-            }
-            int typeChoose = Scanner.getInt("Elija un Activo: ");
-            Asset assetChoose = assets.get(typeChoose);
-            ((Client) activeUser).alquilar(new Trip(zoneChoose, time));
-            print("¿Desea definir una hora de entrega? (Se otorgara un bonus de puntos si se cumple con el plazo de entrega)\n\t0. Si.\n\t1. No.");
-            int selection = Scanner.getInt("Entrada: ");
-            if (selection==0) {
-                ((Client) activeUser).getActualTrip().setDeliveryTime(new DateTime(time.getYear(),time.getMonthOfYear(),time.getDayOfMonth(),Scanner.getInt("Hora: "),Scanner.getInt("Minutos: ")));
-                printDateTime(((Client) activeUser).getActualTrip().getDeliveryTime());
-            }
-            m.getAssetsInUse().put(((Client) activeUser), assetChoose);
-            for(ParkingTerminal p: m.getTerminals().get(zoneChoose)) {
-                if (p.getActives().contains(assetChoose)) {
-                    p.getActives().remove(assetChoose);
-                    m.getClients().modify(clientInUse, (Client) activeUser);
-                    break;
+            if (((Client) activeUser).isInTrip()) print("Ya hay un viaje en curso en "+((Client) activeUser).getActualTrip().getZone().getName());
+            else {
+                print("Elija una zona:");
+                int zoneCounter = 0;
+                int assetCounter = 0;
+                ArrayList<Asset> assets = new ArrayList<>();
+                for (Zone z : m.getZones().getList())
+                    print("\t" + zoneCounter++ + ". " + z.getName());
+                int choose = Scanner.getInt("Entrada: ");
+                Zone zoneChoose = m.getZones().getList().get(choose);
+                for (ParkingTerminal p : m.getTerminals().get(zoneChoose)) {
+                    if (p.getActives().size() > 0)
+                        if (!assets.contains(p.getActives().get(0)))
+                            assets.add(p.getActives().get(0));
+                }
+                for (Asset a : assets) {
+                    print("\t" + assetCounter++ + ". " + a.getType().getName());
+                }
+                int typeChoose = Scanner.getInt("Elija un Activo: ");
+                Asset assetChoose = assets.get(typeChoose);
+                ((Client) activeUser).alquilar(new Trip(zoneChoose, time));
+                print("¿Desea definir una hora de entrega? (Se otorgara un bonus de puntos si se cumple con el plazo de entrega)\n\t0. Si.\n\t1. No.");
+                int selection = Scanner.getInt("Entrada: ");
+                if (selection == 0) {
+                    ((Client) activeUser).getActualTrip().setDeliveryTime(new DateTime(time.getYear(), time.getMonthOfYear(), time.getDayOfMonth(), Scanner.getInt("Hora: "), Scanner.getInt("Minutos: ")));
+                    printDateTime(((Client) activeUser).getActualTrip().getDeliveryTime());
+                }
+                m.getAssetsInUse().put(((Client) activeUser), assetChoose);
+                for (ParkingTerminal p : m.getTerminals().get(zoneChoose)) {
+                    if (p.getActives().contains(assetChoose)) {
+                        p.getActives().remove(assetChoose);
+                        m.getClients().modify(clientInUse, (Client) activeUser);
+                        break;
+                    }
                 }
             }
             clientScreen(m);
@@ -261,8 +267,8 @@ public class Screen {
                 do {
                    int hora= Scanner.getInt("Hora: ");
                    if (hora==0|hora==00)print("Se debe entregar el mismo dia");
-                   else {state=true;
-                setTime(new DateTime(time.getYear(),time.getMonthOfYear(),time.getDayOfMonth(),Scanner.getInt("Hora: "),Scanner.getInt("Minutos: ")));
+                   else {state=false;
+                setTime(new DateTime(time.getYear(),time.getMonthOfYear(),time.getDayOfMonth(),hora,Scanner.getInt("Minutos: ")));
                 ((Client)activeUser).getActualTrip().setEndTime(time);}}while (state);
 
                 try{
@@ -290,6 +296,7 @@ public class Screen {
                     }
                 }
             }
+            clientScreen(m);
         }
     }
 
@@ -313,8 +320,12 @@ public class Screen {
         System.out.println(o);
     }
 
-    public static void exit() {
-        System.out.close();
+    public static void exit(MoovMe m) throws IOException {
+        FileOutputStream fos = new FileOutputStream("dataRestore.file");
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+        oos.writeObject(m);
+        System.exit(0);
     }
 
     public static void clrCmd() {

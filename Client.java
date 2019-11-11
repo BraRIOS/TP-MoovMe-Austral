@@ -20,6 +20,10 @@ public class Client extends User {
         return inTrip;
     }
 
+    public void finishTrip() {
+        this.inTrip = false;
+    }
+
     private Trip actualTrip;
     private boolean inTrip;
     private boolean winnerOfTheMonth;

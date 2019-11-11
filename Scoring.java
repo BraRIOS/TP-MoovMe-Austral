@@ -1,9 +1,13 @@
 import javax.management.InstanceNotFoundException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.HashMap;
 
-public class Scoring{
+public class Scoring implements Serializable {
+
+    private static final long serialVersionUID = 1234567090L;
+
     private ABM<Discount> discounts;
     private HashMap<Zone, ArrayList<Leader>> rankings;
     public Scoring(){
