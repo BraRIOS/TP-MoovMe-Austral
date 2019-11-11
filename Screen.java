@@ -12,17 +12,11 @@ public class Screen {
     private static Client clientInUse = null;
     private static DateTime time = DateTime.now();
 
-    public static void printABMClient(ABM<Client> toPrint) {
-        print(line);
-        for (Client aClient : toPrint.getList())
-            print("Alias: " + aClient.getAlias() + "\t| Phone: " + aClient.getPhone());
-        print(line);
-    }
-
     public static void mainScreen(MoovMe m) throws InstanceNotFoundException, EmptyStackException {
         startScreen();
         print("\t0. Salir.\n\t1. " + (activeUser.getAlias().equals("-----")? "Iniciar":"Cambiar") + " usuario.\n\t2. Cambiar hora.");
-        print("\t3. Ver rankings. [NOT YET]");
+        print("\t3. Ver rankings.");
+        print("\t4. Entregar premios mensuales.");
         int entry = Scanner.getInt("Entrada: ");
         if (entry == 1) usersScreen(m);
         if (entry == 2) {
@@ -42,6 +36,27 @@ public class Screen {
             else System.out.println("ENTRADA INVÁLIDA");
             mainScreen(m);
         }
+        if (entry == 3) {
+            boolean stateTrue=true;
+            Zone zoneChoose=null;
+            if (m.getZones().size() > 0) {
+                do {
+                    int zoneCounter = 0;
+                    print("Elija una Zona: ");
+                    for (Zone z : m.getZones().getList()){ print("\t" + zoneCounter++ + ". " + z.getName());}
+                    int choose = Scanner.getInt("Entrada: ");
+                    if (choose >= 0 && choose < zoneCounter) {
+                        zoneChoose = m.getZones().getList().get(choose);
+                        stateTrue = false;
+                    } else print("Entrada invalida");
+                } while (stateTrue);
+                printRanking(m, zoneChoose);
+            }
+            else print("No hay zonas disponibles");mainScreen(m);
+
+        }
+        if (entry == 4) {m.getScoring().monthlyAwards(m.getClients());print("Se entregaron los premios del mes");mainScreen(m); }
+
         if (entry == 0) exit();
     }
 
@@ -103,7 +118,7 @@ public class Screen {
             double price = Scanner.getDouble("Ingrese el precio de la Tarifa de la Zona: ");
             m.getTariffs().add(new Tariff(price, zone));
             adminScreen(m);
-        };
+        }
         if (entry == 3) {
             int zoneCounter = 0;
             if (m.getZones().size() > 0) {
@@ -236,18 +251,23 @@ public class Screen {
                     break;
                 }
             }
-            clientScreen(MoovMe m);
+            clientScreen(m);
         }
         if (entry == 3) {
             if(!((Client)activeUser).isInTrip()) print("Por favor inicie un viaje");
             else {
                 print("Indique el tiempo de finalización");
+                boolean state=true;
+                do {
+                   int hora= Scanner.getInt("Hora: ");
+                   if (hora==0|hora==00)print("Se debe entregar el mismo dia");
+                   else {state=true;
                 setTime(new DateTime(time.getYear(),time.getMonthOfYear(),time.getDayOfMonth(),Scanner.getInt("Hora: "),Scanner.getInt("Minutos: ")));
-                ((Client)activeUser).getActualTrip().setEndTime(time);
+                ((Client)activeUser).getActualTrip().setEndTime(time);}}while (state);
 
                 try{
-                    Discount discount = m.getScoring().findDiscount(((Client)activeUser),m.getAssetsInUse().get(((Client)activeUser)),((Client)activeUser).getActualTrip().getZone())
-                    print("¿Hay un descuento disponible, desea usarlo?" + "Puntos requeridos: " +discount.getMinPoints() +"\t\tPuntos actuales: "+((Client)activeUser).getPoints().getCurrentPoints() + "\nDescuento: " + discount.getDiscount()*100d + "%\n\t0. Si.\n\t1. No.");
+                    Discount discount = m.getScoring().findDiscount(((Client)activeUser),m.getAssetsInUse().get(((Client)activeUser)),((Client)activeUser).getActualTrip().getZone());
+                    print("¿Hay un descuento disponible, desea usarlo?" + "Puntos requeridos: " +discount.getMinPoints() +"\t\tPuntos actuales: "+((Client)activeUser).getPoints().getCurrentPoints() + "\nDescuento: " + (Math.round((1 - discount.getDiscount())*100)) + "%\n\t0. Si.\n\t1. No.");
                     int selection = Scanner.getInt("Entrada: ");
                     if(selection==0){
                         Invoice invoice=((Client)activeUser).getActualTrip().FinishTrip((Client)activeUser,m.getAssetsInUse().get(((Client)activeUser)),m.getTariffs(), discount);
@@ -307,4 +327,15 @@ public class Screen {
         } catch (InterruptedException | IOException var1) {
         }
     }
+
+    public static void printRanking(MoovMe m,Zone aZone){
+
+            print(aZone.getName()+"\n");
+        ArrayList<Leader> rankByZone = m.getScoring().getRankings(m.getClients()).get(aZone);
+        for (int i = 0; i < rankByZone.size(); i++) {
+                    if (i<10)print(i+"."+" "+ rankByZone.get(i).getAlias()+"\tPuntos: "+rankByZone.get(i).getPoints());
+                    else break;
+                }
+            }
+
 }

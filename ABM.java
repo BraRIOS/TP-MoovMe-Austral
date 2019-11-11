@@ -13,10 +13,6 @@ public class ABM <T> {
         memory.remove(instanceOfT);
     }
 
-    public void clear() {
-        memory.clear();
-    }
-
     public ArrayList<T> getList() {
         return new ArrayList<>(memory);
     }
