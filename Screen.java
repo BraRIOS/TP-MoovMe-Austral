@@ -1,7 +1,6 @@
 import org.joda.time.DateTime;
 
 import javax.management.InstanceNotFoundException;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -46,14 +45,17 @@ public class Screen {
                 do {
                     int zoneCounter = 0;
                     print("Elija una Zona: ");
-                    for (Zone z : m.getZones().getList()){ print("\t" + zoneCounter++ + ". " + z.getName());}
+                    for (Zone z : m.getZones().getList()){
+                        print("\t" + zoneCounter++ + ". " + z.getName());
+                    }
                     int choose = Scanner.getInt("Entrada: ");
                     if (choose >= 0 && choose < zoneCounter) {
                         zoneChoose = m.getZones().getList().get(choose);
                         stateTrue = false;
                     } else print("Entrada invalida");
                 } while (stateTrue);
-                printRanking(m, zoneChoose);
+                if (m.getScoring().getRankings(m.getClients()).get(zoneChoose)!=null)printRanking(m, zoneChoose);
+                else print("No hay ranking disponible para la zona seleccionada");
             }
             else print("No hay zonas disponibles");mainScreen(m);
 
@@ -108,8 +110,8 @@ public class Screen {
         print("\t7. Ver Descuentos.\n\t8. Volver a Inicio.");
         int entry = Scanner.getInt("Entrada: ");
         if (entry == 0) exit(m);
-        if (entry == 1) usersScreen(m);
-        if (entry == 2) {
+        else if (entry == 1) usersScreen(m);
+        else if (entry == 2) {
             if (m.getZones().size() > 0) {
                 print("Zonas existentes:");
                 for (Zone z : m.getZones().getList())
@@ -122,7 +124,7 @@ public class Screen {
             m.getTariffs().add(new Tariff(price, zone));
             adminScreen(m);
         }
-        if (entry == 3) {
+        else if (entry == 3) {
             int zoneCounter = 0;
             if (m.getZones().size() > 0) {
                 print("Elija una Zona para agregar terminal:");
@@ -139,7 +141,7 @@ public class Screen {
             } else print("\tNo hay Zonas existentes.");
             adminScreen(m);
         }
-        if (entry == 4) {
+        else if (entry == 4) {
             print("Terminales Existentes:");
             for(Zone z: m.getZones().getList()){
                 print("Zona: " + z.getName() + "   Incremento: " + (Math.round((z.getIncrementPercent()-1)*100)) + "%");
@@ -150,7 +152,7 @@ public class Screen {
             }
             adminScreen(m);
         }
-        if (entry == 5) {
+        else if (entry == 5) {
             print("Lista de Clientes:");
             int clientCounter = 0;
             if (m.getClients().size()==0) {print("\tPrimero se deben ingresar clientes al sistema");}
@@ -177,7 +179,7 @@ public class Screen {
             }
             adminScreen(m);
         }
-        if (entry == 6) {
+        else if (entry == 6) {
             int typeCounter = 0;
             ArrayList<TypeOfAsset> typeOfAssets = new ArrayList<>();
             ArrayList<Zone> zones = new ArrayList<>();
@@ -215,12 +217,13 @@ public class Screen {
             }
             adminScreen(m);
         }
-        if (entry == 7) {
+        else if (entry == 7) {
             for(Discount d: m.getScoring().getDiscounts().getList())
                 print("Zona: " + d.getZone().getName() + "   Activo: " + d.getType().getName() + "   Puntos: " + d.getMinPoints() + "   Porcentaje: " + (Math.round((1 - d.getDiscount())*100)) + "%");
             adminScreen(m);
         }
-        if (entry == 8) mainScreen(m);
+        else if (entry == 8) mainScreen(m);
+        else print("Entrada inválida"); adminScreen(m);
     }
 
     public static void clientScreen(MoovMe m) throws InstanceNotFoundException, EmptyStackException, IOException {
@@ -228,8 +231,8 @@ public class Screen {
         print("\t0. Salir de la aplicación.\n\t1. Cambiar usuario.\n\t2. Iniciar Viaje.\n\t3. Finalizar Viaje.\n\t4. Volver al menú principal");
         int entry = Scanner.getInt("Entrada: ");
         if (entry == 0) exit(m);
-        if (entry == 1) usersScreen(m);
-        if (entry == 2) {
+        else if (entry == 1) usersScreen(m);
+        else if (entry == 2) {
             if (((Client) activeUser).isBlocked()){
                 print("Usted está bloqueado\n");
                 if (((Client) activeUser).getInvoiceToShow()!=null)
@@ -277,7 +280,7 @@ public class Screen {
             }
             clientScreen(m);
         }
-        if (entry == 3) {
+        else if (entry == 3) {
             if (((Client)activeUser).isBlocked()) print("Usted está bloqueado");
             else if(!((Client)activeUser).isInTrip()) print("Por favor inicie un viaje");
             else {
@@ -317,7 +320,8 @@ public class Screen {
             }
             clientScreen(m);
         }
-        if (entry == 4){activeUser=new User("-----");mainScreen(m);}
+        else if (entry == 4){activeUser=new User("-----");mainScreen(m);}
+        else print("Entrada inválida"); clientScreen(m);
     }
 
     private static void startScreen() {

@@ -11,7 +11,7 @@ public class Main {
         while (true) {
             int entry = Scanner.getInt("Como desea Iniciar MoovMe:\n\t0. Cargar datos existentes.\n\t1. Empezar con nuevos datos.\nEntrada: ");
             if (entry == 0) {
-                FileInputStream fis = new FileInputStream("dataRestore.file");
+                InputStream fis = Main.class.getResourceAsStream("dataRestore.file");
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 system = (MoovMe) ois.readObject();
                 break;
